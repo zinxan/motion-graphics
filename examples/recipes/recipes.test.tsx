@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FilmSurface, describeFilm } from "@zxn/motion-core";
 import { films } from "./index";
+import manifest from "./manifest.json";
 
 /*
  * Every recipe is mounted for real, at its first, middle and last frame and at
@@ -30,10 +31,15 @@ beforeEach(() => {
 });
 afterEach(() => vi.restoreAllMocks());
 
+it("lists every recipe in the manifest, so the docs and the MCP server know about all of them", () => {
+  expect(manifest.map((entry) => entry.id).sort()).toEqual(films.map((film) => film.id).sort());
+});
+
 describe.each(films.map((film) => [film.id, film] as const))("recipe %s", (_id, film) => {
   // The list mixes films with different props; describing one only needs it to be some film.
   const descriptor = describeFilm(film as never);
-  const usesCanvas = ["matrix-rain", "noise-field", "retro-tv"].includes(film.id);
+  // The manifest already says which recipes draw on a canvas; a new one is covered without touching this file.
+  const usesCanvas = manifest.find((entry) => entry.id === film.id)?.techniques.includes("Canvas2D") ?? false;
 
   it("declares a sensible film", () => {
     expect(film.width).toBe(1920);

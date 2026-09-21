@@ -42,7 +42,7 @@ export function createServer(): McpServer {
     const hits = search(query, docs, examples, limit ?? 6);
     if (hits.length === 0) return text(`Nothing matched "${query}". Topics: ${docs.map((doc) => doc.topic).join(", ")}. Examples: ${examples.map((example) => example.id).join(", ")}.`);
     return text(hits.map((hit) => hit.kind === "doc"
-      ? `## ${hit.title}  (doc: ${hit.id})\n\n${hit.excerpt}`
+      ? `## ${hit.title}  (read_doc topic: ${hit.id})\n\n${hit.excerpt}`
       : `## Example: ${hit.title}  (get_example id: ${hit.id})\n\n${hit.excerpt}`).join("\n\n---\n\n"));
   });
 

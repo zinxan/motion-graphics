@@ -39,13 +39,22 @@ const habits: readonly Readonly<{ pattern: RegExp; message: string }>[] = [
   { pattern: /useState\(|useReducer\(/g, message: "State that accumulates across frames breaks scrubbing: frames are asked for in any order. Derive everything from the frame and props." },
 ];
 
-function habitFindings(file: string, text: string): Finding[] {
+/**
+ * The source with comments blanked out, line for line. The habits are found by
+ * pattern, and a comment that says "never call Date.now()" is not a call to it.
+ */
+const withoutComments = (text: string): string =>
+  text.replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, (comment) => comment.replace(/[^\n]/g, " "));
+
+function habitFindings(file: string, source: string): Finding[] {
+  const text = withoutComments(source);
   const findings: Finding[] = [];
   for (const { pattern, message } of habits) {
     for (const match of text.matchAll(pattern)) findings.push({ severity: "warning", file, line: lineOf(text, match.index), message });
   }
   // Blur inside a loop is the single most common way to make a film crawl.
-  const looped = /\.map\([\s\S]{0,1200}?(textShadow|boxShadow|filter:\s*["'`]blur|backdropFilter)/.exec(text);
+  // Either way of making a list: `.map(` over an array, or `Array.from({ length }, callback)`.
+  const looped = /(?:\.map\(|Array\.from\(\s*\{[^}]*\}\s*,)[\s\S]{0,1200}?(textShadow|boxShadow|filter:\s*["'`]blur|backdropFilter)/.exec(text);
   if (looped) findings.push({ severity: "warning", file, line: lineOf(text, looped.index), message: "A blur or shadow is applied to every item of a list. Blur is the most expensive thing to paint; put one on a shared parent, or draw the list on a <Canvas2D>." });
   const size = /width:\s*(\d{4,}),\s*\n?\s*height:\s*(\d{4,})/.exec(text);
   if (size && Number(size[1]) * Number(size[2]) > 1920 * 1080) findings.push({ severity: "warning", file, line: lineOf(text, size.index), message: "Larger than 1920×1080. A host scales a film to fit; four times the pixels is four times the paint on every frame. Author at 1920×1080 unless asked otherwise." });
@@ -61,15 +70,43 @@ function importFindings(file: string, text: string): Finding[] {
   return findings;
 }
 
-/** A directory whose node_modules can resolve the SDK, so types come from the real declarations. */
-function resolutionRoot(): string {
+/**
+ * A directory whose node_modules can resolve the SDK, so types come from the
+ * real declarations: beside this server first, then wherever it was started.
+ * Nothing, if neither has the SDK -- guessing a root only produces a page of
+ * "cannot find module" errors that say nothing about the film.
+ */
+function resolutionRoot(): string | undefined {
   const require = createRequire(import.meta.url);
   try {
     const core = require.resolve("@zxn/motion-core/package.json");
     return path.resolve(path.dirname(core), "../../..");
   } catch {
-    return process.cwd();
+    return existsSync(path.join(process.cwd(), "node_modules/@zxn/motion-core")) ? process.cwd() : undefined;
   }
+}
+
+/** Props with no control can only be changed by editing code, which is exactly what a control is for. */
+function controlFindings(file: string, text: string): Finding[] {
+  const sourceFile = ts.createSourceFile(file, text, ts.ScriptTarget.ES2023, true, ts.ScriptKind.TSX);
+  const findings: Finding[] = [];
+  const keysOf = (node: ts.Expression | undefined): string[] | undefined => node && ts.isObjectLiteralExpression(node)
+    ? node.properties.flatMap((property) => property.name && (ts.isIdentifier(property.name) || ts.isStringLiteral(property.name)) ? [property.name.text] : [])
+    : undefined;
+  const visit = (node: ts.Node): void => {
+    if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === "defineFilm" && node.arguments[0] && ts.isObjectLiteralExpression(node.arguments[0])) {
+      const field = (name: string) => (node.arguments[0] as ts.ObjectLiteralExpression).properties
+        .find((property): property is ts.PropertyAssignment => ts.isPropertyAssignment(property) && ts.isIdentifier(property.name) && property.name.text === name)?.initializer;
+      const props = keysOf(field("defaultProps"));
+      const controls = keysOf(field("controls")) ?? [];
+      const missing = (props ?? []).filter((name) => !controls.includes(name));
+      if (missing.length > 0) findings.push({ severity: "warning", file, line: sourceFile.getLineAndCharacterOfPosition(node.getStart()).line + 1,
+        message: `No control for ${missing.map((name) => `"${name}"`).join(", ")}. Give every prop a control (text, number, color, boolean or choice) so it can be changed without opening the code.` });
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sourceFile);
+  return findings;
 }
 
 export function checkFilm(source: FilmSource): readonly Finding[] {
@@ -77,12 +114,14 @@ export function checkFilm(source: FilmSource): readonly Finding[] {
   if (!names.includes(source.entryFile)) return [{ severity: "error", file: source.entryFile, message: `entryFile "${source.entryFile}" is not among the files supplied: ${names.join(", ") || "none"}.` }];
 
   const findings: Finding[] = [];
-  for (const [file, text] of Object.entries(source.files)) findings.push(...importFindings(file, text), ...habitFindings(file, text));
+  for (const [file, text] of Object.entries(source.files)) findings.push(...importFindings(file, text), ...habitFindings(file, text), ...controlFindings(file, text));
   if (!/export\s+const\s+films\s*=/.test(source.files[source.entryFile]!)) {
     findings.push({ severity: "error", file: source.entryFile, message: "The entry file must `export const films = [defineFilm({...})]`." });
   }
 
   const root = resolutionRoot();
+  // Without the SDK's declarations there is nothing to check types against; `canTypeCheck` lets the caller say so.
+  if (!root) return findings;
   const virtualDirectory = path.join(root, ".zxn-film-check");
   const virtual = new Map(Object.entries(source.files).map(([file, text]) => [path.join(virtualDirectory, file), text]));
   const options: ts.CompilerOptions = {
@@ -105,10 +144,17 @@ export function checkFilm(source: FilmSource): readonly Finding[] {
     // Only what the agent wrote is its business; a library's own declarations are not.
     if (diagnostic.file && !virtual.has(diagnostic.file.fileName)) continue;
     const line = diagnostic.file && diagnostic.start !== undefined ? diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start).line + 1 : undefined;
-    findings.push({ severity: diagnostic.category === ts.DiagnosticCategory.Error ? "error" : "warning", file, ...(line === undefined ? {} : { line }), message: ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n") });
+    const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
+    // A package a film may import, whose types simply are not installed here: not the film's mistake.
+    const unresolved = /Cannot find module '([^']+)'/.exec(message)?.[1];
+    if (unresolved && isAllowed(unresolved) && !unresolved.startsWith(".")) {
+      findings.push({ severity: "warning", file, ...(line === undefined ? {} : { line }), message: `"${unresolved}" may be imported by a film, but it is not installed beside this checker, so nothing that uses it could be type-checked.` });
+      continue;
+    }
+    findings.push({ severity: diagnostic.category === ts.DiagnosticCategory.Error ? "error" : "warning", file, ...(line === undefined ? {} : { line }), message });
   }
   return findings;
 }
 
 /** Whether the SDK's declarations can be found, so a caller can say why type errors are missing rather than report none. */
-export const canTypeCheck = (): boolean => existsSync(path.join(resolutionRoot(), "node_modules/@zxn/motion-core"));
+export const canTypeCheck = (): boolean => resolutionRoot() !== undefined;

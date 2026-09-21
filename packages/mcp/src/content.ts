@@ -44,8 +44,15 @@ export function parseDoc(topic: string, text: string): Doc {
 export function loadDocs(): readonly Doc[] {
   const { docs } = contentRoots();
   if (!existsSync(docs)) return [];
-  return readdirSync(docs).filter((file) => file.endsWith(".md")).sort()
-    .map((file) => parseDoc(file.replace(/\.md$/, ""), readFileSync(path.join(docs, file), "utf8")));
+  const pages = readdirSync(docs).filter((file) => file.endsWith(".md")).map((file) => file.replace(/\.md$/, ""));
+  // Reading order comes from the same manifest the website's sidebar is built from; anything unlisted follows alphabetically.
+  const manifest = path.join(docs, "manifest.json");
+  const ordered = existsSync(manifest)
+    ? (JSON.parse(readFileSync(manifest, "utf8")) as { groups: readonly { pages: readonly string[] }[] }).groups.flatMap((group) => group.pages)
+    : [];
+  const position = (topic: string): number => ordered.includes(topic) ? ordered.indexOf(topic) : ordered.length;
+  return pages.sort((left, right) => position(left) - position(right) || left.localeCompare(right))
+    .map((topic) => parseDoc(topic, readFileSync(path.join(docs, `${topic}.md`), "utf8")));
 }
 
 export function loadExamples(): readonly Example[] {

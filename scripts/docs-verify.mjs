@@ -16,6 +16,10 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import ts from "typescript";
 import { checkFilm, parseDoc } from "../packages/mcp/dist/index.js";
+import { canTypeCheck } from "../packages/mcp/dist/check.js";
+
+// Without the SDK beside it the checker finds no type errors at all, and "nothing wrong" would be a lie.
+if (!canTypeCheck()) { console.error("Cannot verify: @zxn/motion-core is not installed. Run `npm install && npm run build` first."); process.exit(1); }
 
 const root = path.resolve(import.meta.dirname, "..");
 const docsDirectory = path.join(root, "docs");

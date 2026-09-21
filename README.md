@@ -46,14 +46,15 @@ zxn-motion render ./films.tsx title ./out/title.mp4
 
 | Package | What it is |
 | --- | --- |
-| [`@zxn/motion-core`](packages/core) | `defineFilm`, the frame context (`useTimeline`, `useVirtualTime`, `useTempo`), timing primitives (`Cue`, `Hold`, `Repeat`, `FullFrame`), animation maths (`mapRange`, `springValue`, `easing`, `seededRandom`), and the interface-film kit: `Stage`, `Camera`, `Pointer`, `Footage`. |
+| [`@zxn/motion-core`](packages/core) | `defineFilm`, the frame context (`useTimeline`, `useVirtualTime`, `useTempo`), timing primitives (`Cue`, `Hold`, `Repeat`, `FullFrame`), `Canvas2D` for anything particle-like, animation maths (`mapRange`, `springValue`, `easing`, `seededRandom`), and the interface-film kit: `Stage`, `Camera`, `Pointer`, `Footage`. |
 | [`@zxn/motion-player`](packages/player) | `<FilmPlayer>`: play, pause, seek and loop a film in the browser. Ships its own small CSS; no Tailwind needed. |
 | [`@zxn/motion-renderer`](packages/renderer) | `renderFilm()`: commits each exact frame, rasterises the DOM and encodes H.264 or VP9 through WebCodecs. `canRenderFilm()` checks device support before any work starts. |
 | [`@zxn/motion-cli`](packages/cli) | `zxn-motion render <entry> <film> <output>`: bundles a film entry and renders it in a sandboxed, hidden Electron window. |
 | [`@zxn/motion-graphics`](packages/graphics) | Declarative, frame-deterministic charts and callouts. Definitions are plain data, so they are safe to generate. |
+| [`@zxn/motion-mcp`](packages/mcp) | A Model Context Protocol server for AI agents: the docs, the verified examples and a film checker. |
 | [`@zxn/motion-text`](packages/text) | Serializable 2D text styles (gradients, strokes, shadows, letter spacing) with one renderer for canvas and export. No React dependency. |
 
-Dependencies point inward: CLI → Renderer / Player → Core. Graphics and Text stand alone.
+Dependencies point inward: CLI → Renderer / Player → Core. Graphics, Text and the MCP server stand alone.
 
 ## Getting started
 
@@ -97,10 +98,37 @@ Or from the command line. The file extension picks the preset, and an existing f
 zxn-motion render ./films.tsx title ./out/title.webm --props ./props.json
 ```
 
-## Learn the API
+## Recipes
 
-- [Composition API](docs/composition-api.md): films, timing, animation maths, stage and camera, pointer, tempo, footage.
-- [`examples/`](examples): `kinetic-type.tsx` (springs and cues), `coding-tutorial.tsx`, `cinematic-overlay.tsx`.
+Eight example films, each there to teach one technique done properly. Every one is mounted at several frames by the test suite and rendered to video, so they are known to work.
+
+[![Cartoon television](docs/media/retro-tv.jpg)](docs/recipes.md)
+
+| Recipe | What it shows |
+| --- | --- |
+| [Matrix rain](examples/recipes/matrix-rain.tsx) | A field of thousands of glyphs on one `<Canvas2D>`, seeded per column, stepping a cell at a time. |
+| [Cartoon television](examples/recipes/retro-tv.tsx) | SVG with squash and stretch and follow-through, canvas static, a play button that gets pressed. |
+| [Elapsed clock](examples/recipes/elapsed-clock.tsx) | "Three hours later": an analogue clock sweeping between two times. |
+| [Bar chart race](examples/recipes/bar-chart-race.tsx) | `d3-scale` and `d3-interpolate` as pure functions of the frame. |
+| [Noise field](examples/recipes/noise-field.tsx) | Seeded `simplex-noise`, with time as the third axis. |
+| [GSAP title](examples/recipes/gsap-title.tsx) | A paused GSAP timeline the film seeks every frame: seek, never play. |
+| [Lower third](examples/recipes/lower-third.tsx) | A transparent name strap driven entirely by controls. |
+| [Beat pulse](examples/recipes/beat-pulse.tsx) | Cuts on bars and a pulse on beats from the film's tempo; OKLCH colour with `culori`. |
+
+```bash
+zxn-motion render examples/recipes/retro-tv.tsx retro-tv out/retro-tv.mp4
+```
+
+## Documentation
+
+Every code block in the docs is compiled: complete films are type-checked against the SDK and must pass the film checker, and quoted excerpts must still match the example they came from (`npm run docs:verify`).
+
+- [Getting started](docs/getting-started.md) and [Thinking in frames](docs/thinking-in-frames.md): the model, and how to make motion read well.
+- [Controls and props](docs/controls-and-props.md), [Canvas](docs/canvas.md), [Using packages](docs/using-packages.md), [Tempo and music](docs/tempo-and-music.md), [Interface films](docs/interface-films.md).
+- [Performance](docs/performance.md): what makes a film slow, and a budget.
+- [Recipes](docs/recipes.md): the gallery, with video.
+- [Writing films with an AI agent](docs/ai-agents.md): the MCP server, its tools, and a rules file for your project.
+- [Composition API](docs/composition-api.md): the reference.
 
 ## Design rules
 
@@ -122,9 +150,9 @@ If you want Remotion's ecosystem, cloud rendering and years of polish, use Remot
 
 ## Status
 
-`0.1.0`: a working vertical slice, used in production inside ZXN Studio. Expect the API to move before 1.0. Not yet published to npm; build from source for now.
+`0.1.0`: a working vertical slice, used inside ZXN Studio. Expect the API to move before 1.0. Not yet published to npm; build from source for now.
 
-Known limits: rendering rasterises the DOM, so very heavy DOM (thousands of blurred text nodes at 4K) is slow, and a canvas drawing primitive is planned. Audio is out of scope for a film; sound belongs on a timeline. `<Footage>` needs a frame provider, which the CLI installs and other hosts must supply.
+Known limits: rendering rasterises the DOM, so very heavy DOM (thousands of blurred text nodes at 4K) is slow; draw anything particle-like on a single `<Canvas2D>` instead. Audio is out of scope for a film; sound belongs on a timeline. `<Footage>` needs a frame provider, which the CLI installs and other hosts must supply.
 
 ## Contributing
 

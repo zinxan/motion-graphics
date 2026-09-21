@@ -1,0 +1,11 @@
+{
+  "title": "ZXN Motion",
+  "groups": [
+    { "title": "Start here", "pages": ["getting-started", "thinking-in-frames"] },
+    { "title": "Build", "pages": ["controls-and-props", "canvas", "using-packages", "tempo-and-music", "interface-films"] },
+    { "title": "Ship", "pages": ["performance"] },
+    { "title": "Examples", "pages": ["recipes"] },
+    { "title": "AI agents", "pages": ["ai-agents"] },
+    { "title": "Reference", "pages": ["composition-api"] }
+  ]
+}

@@ -49,6 +49,22 @@ describe("check_film", () => {
     expect(messages).toContain("every item of a list");
   });
 
+  it("catches a blur in a list however the list is made", () => {
+    const viaArrayFrom = film('const stars = Array.from({ length: 40 }, (_, index) => <i key={index} style={{ boxShadow: "0 0 12px white" }} />);');
+    expect(checkFilm(viaArrayFrom).map((finding) => finding.message).join(" ")).toContain("every item of a list");
+  });
+
+  it("does not mistake a comment about a bad habit for the habit", () => {
+    expect(checkFilm(film("// never call Date.now() or Math.random() in a film\n/* setInterval( is forbidden */"))).toEqual([]);
+  });
+
+  it("asks for a control on every prop", () => {
+    const uncontrolled = { entryFile: "film.tsx", files: { "film.tsx": `import { FullFrame, defineFilm } from "@zxn/motion-core";
+const Demo = ({ name }: { readonly name: string }) => <FullFrame>{name}</FullFrame>;
+export const films = [defineFilm({ id: "demo", title: "Demo", width: 1920, height: 1080, frameRate: 30, frames: 60, component: Demo, defaultProps: { name: "Ada" } })];` } };
+    expect(checkFilm(uncontrolled).map((finding) => finding.message).join(" ")).toContain('No control for "name"');
+  });
+
   it("needs the entry file to be supplied and to export films", () => {
     expect(checkFilm({ entryFile: "missing.tsx", files: {} })[0]?.severity).toBe("error");
     expect(checkFilm({ entryFile: "film.tsx", files: { "film.tsx": "export const nothing = 1;" } }).map((finding) => finding.message).join(" ")).toContain("export const films");
