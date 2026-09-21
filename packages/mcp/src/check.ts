@@ -86,6 +86,17 @@ function resolutionRoot(): string | undefined {
   }
 }
 
+const workspacePackages = { "@zxn/motion-core": "core", "@zxn/motion-graphics": "graphics", "@zxn/motion-text": "text" } as const;
+
+function workspaceSources(root: string): Pick<ts.CompilerOptions, "paths"> {
+  // Absolute targets, so no `baseUrl` is needed (TypeScript 6 deprecates it).
+  const paths = Object.fromEntries(Object.entries(workspacePackages)
+    .map(([name, directory]) => [name, path.join(root, "packages", directory, "src/index.ts")] as const)
+    .filter(([, file]) => existsSync(file))
+    .map(([name, file]) => [name, [file]]));
+  return Object.keys(paths).length > 0 ? { paths } : {};
+}
+
 /** Props with no control can only be changed by editing code, which is exactly what a control is for. */
 function controlFindings(file: string, text: string): Finding[] {
   const sourceFile = ts.createSourceFile(file, text, ts.ScriptTarget.ES2023, true, ts.ScriptKind.TSX);
@@ -128,6 +139,9 @@ export function checkFilm(source: FilmSource): readonly Finding[] {
     target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext, moduleResolution: ts.ModuleResolutionKind.Bundler,
     jsx: ts.JsxEmit.ReactJSX, strict: true, noEmit: true, skipLibCheck: true, esModuleInterop: true,
     lib: ["lib.es2023.d.ts", "lib.dom.d.ts", "lib.dom.iterable.d.ts"], types: [],
+    // In this repository the packages may not be built yet (a fresh clone, CI before its build step);
+    // their source says the same thing their declarations will.
+    ...workspaceSources(root),
   };
   const host = ts.createCompilerHost(options);
   const original = { fileExists: host.fileExists.bind(host), readFile: host.readFile.bind(host), getSourceFile: host.getSourceFile.bind(host) };
