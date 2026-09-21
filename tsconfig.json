@@ -41,6 +41,9 @@
       ],
       "@zxn/motion-renderer": [
         "./packages/renderer/src/index.ts"
+      ],
+      "@zxn/motion-mcp": [
+        "./packages/mcp/src/index.ts"
       ]
     }
   },

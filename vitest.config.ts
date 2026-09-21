@@ -12,7 +12,8 @@ export default defineConfig({
       "@zxn/motion-text": source("text"),
       "@zxn/motion-player": source("player"),
       "@zxn/motion-renderer": source("renderer"),
+      "@zxn/motion-mcp": source("mcp"),
     },
   },
-  test: { globals: true, include: ["packages/**/*.test.{ts,tsx}"] },
+  test: { globals: true, include: ["packages/**/*.test.{ts,tsx}", "examples/**/*.test.{ts,tsx}"] },
 });

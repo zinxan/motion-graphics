@@ -1,3 +1,7 @@
+---
+title: Composition API
+summary: Reference for films, time, timing primitives, animation maths, stage and camera, pointer, tempo and footage.
+---
 # Composition API
 
 Everything here is exported from `@zxn/motion-core` unless it says otherwise.

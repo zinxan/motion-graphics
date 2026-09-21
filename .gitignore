@@ -4,3 +4,4 @@ packages/*/LICENSE
 *.tsbuildinfo
 .DS_Store
 out/
+packages/mcp/content/
