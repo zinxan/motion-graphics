@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "useDefineForClassFields": true,
+    "lib": [
+      "ES2023",
+      "DOM",
+      "DOM.Iterable",
+      "WebWorker"
+    ],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+    "types": [
+      "vitest/globals",
+      "node"
+    ],
+    "paths": {
+      "@zxn/motion-core": [
+        "./packages/core/src/index.ts"
+      ],
+      "@zxn/motion-graphics": [
+        "./packages/graphics/src/index.ts"
+      ],
+      "@zxn/motion-text": [
+        "./packages/text/src/index.ts"
+      ],
+      "@zxn/motion-player": [
+        "./packages/player/src/index.ts"
+      ],
+      "@zxn/motion-renderer": [
+        "./packages/renderer/src/index.ts"
+      ]
+    }
+  },
+  "include": [
+    "packages",
+    "examples",
+    "vitest.config.ts"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "zxn-motion-electron-runner",
+  "private": true,
+  "type": "module",
+  "main": "../electron-runner.mjs"
+}

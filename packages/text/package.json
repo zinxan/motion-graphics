@@ -1,0 +1,31 @@
+{
+  "name": "@zxn/motion-text",
+  "version": "0.1.0",
+  "description": "Typed deterministic 2D and 3D text models for ZXN Motion.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zinxan/motion-graphics.git",
+    "directory": "packages/text"
+  },
+  "homepage": "https://github.com/zinxan/motion-graphics#readme",
+  "bugs": {
+    "url": "https://github.com/zinxan/motion-graphics/issues"
+  }
+}

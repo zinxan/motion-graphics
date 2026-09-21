@@ -1,0 +1,41 @@
+{
+  "name": "@zxn/motion-player",
+  "version": "0.1.0",
+  "description": "Interactive browser player for ZXN Motion films.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./player.css": "./dist/player.css"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "lucide-react": "^0.545.0"
+  },
+  "peerDependencies": {
+    "@zxn/motion-core": "^0.1.0",
+    "react": ">=19.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zinxan/motion-graphics.git",
+    "directory": "packages/player"
+  },
+  "homepage": "https://github.com/zinxan/motion-graphics#readme",
+  "bugs": {
+    "url": "https://github.com/zinxan/motion-graphics/issues"
+  }
+}

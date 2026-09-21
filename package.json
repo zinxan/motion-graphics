@@ -1,0 +1,27 @@
+{
+  "name": "zxn-motion-graphics",
+  "private": true,
+  "description": "Deterministic, frame-addressable motion graphics in React. The open-source film stack behind ZXN Studio.",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit --pretty false",
+    "test": "vitest run",
+    "check": "npm run typecheck && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.1.16",
+    "@types/react-dom": "^19.1.9",
+    "esbuild": "^0.28.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.1.0",
+    "vitest": "^4.0.0"
+  }
+}

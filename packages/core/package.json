@@ -1,0 +1,34 @@
+{
+  "name": "@zxn/motion-core",
+  "version": "0.1.0",
+  "description": "Deterministic React primitives for programmatic video.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "react": ">=19.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zinxan/motion-graphics.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/zinxan/motion-graphics#readme",
+  "bugs": {
+    "url": "https://github.com/zinxan/motion-graphics/issues"
+  }
+}
