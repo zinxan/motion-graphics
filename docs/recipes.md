@@ -16,6 +16,7 @@ Every film here lives in [`examples/recipes/`](../examples/recipes) and does one
 | [GSAP title](#gsap-title) | Seek a timeline, never play it | DOM | `gsap` |
 | [Lower third](#lower-third) | In, hold and out, all from controls | DOM | — |
 | [Beat pulse](#beat-pulse) | Cutting on bars and beats | DOM | `culori` |
+| [Rocket launch](#rocket-launch) | Cutting a film into beats, a line drawing itself on, a camera shake | SVG + Canvas2D | — |
 
 ## These are known to work
 
@@ -175,6 +176,26 @@ Four words cut one per bar, a ring pulsing out on every beat, four dots showing 
 `tempo.beat(n)` converts a beat index to a frame and `tempo.beatAt(frame)` goes the other way, so `sinceBeat` is the film's distance past the last downbeat whatever the bpm is. Every conversion goes through the same function, which is why the word cut and the pulse land on the same frame rather than one apart. The words are placed with `<Cue startBar={index} lengthBars={1}>` — no frame numbers anywhere — so changing `bpm` in the film's `tempo` re-times the entire film.
 
 Change first: `bpm` in `tempo`, and `frames` alongside it. Then the `words` array, and the `from`/`to` colour controls, which are blended in OKLCH by `culori` so the midpoint stays bright instead of going through grey. Deeper: [Tempo and music](tempo-and-music.md).
+
+## Rocket launch
+
+<video src="media/rocket-launch.mp4" poster="media/rocket-launch.jpg" controls muted loop playsinline width="720"></video>
+
+A countdown, ignition, and a rocket climbing away along a trajectory that draws itself on behind it. It teaches three things. `<Cue>` cuts the film into its beats, so the count, the ignition and the climb are each written against a clock that starts at zero. The trajectory is the oldest trick for "a line being drawn": an SVG path with `stroke-dashoffset` set from the frame. And the camera shake is nothing more than a seeded offset of the whole frame that dies away, which sells the weight of the launch better than any amount of flame.
+
+```tsx excerpt=examples/recipes/rocket-launch.tsx
+  const thrust = frame < ignition ? 0 : Math.min(1, (frame - ignition) / 8);
+  // The shake: a seeded jolt, biggest at ignition, gone by the time the rocket is clear of the pad.
+  const shake = Math.max(0, 1 - (frame - ignition) / 40) * (frame >= ignition ? 1 : 0);
+  const jolt = { x: (seededRandom(`jx-${frame}`) - 0.5) * 28 * shake, y: (seededRandom(`jy-${frame}`) - 0.5) * 22 * shake };
+  // The trajectory draws itself on behind the rocket: the dash offset is how much of the path is still hidden.
+  const pathLength = 2400;
+  const drawn = mapRange(frame, [liftoff, film.frames], [0, 1], { clamp: true, ease: easing.easeIn });
+```
+
+`seededRandom` keyed on the frame is what makes the shake honest: frame 90 jolts the same way every time it is asked for, so a scrub, an export and a preview agree. The smoke is one `<Canvas2D>` -- a hundred and sixty puffs, each born on its own seeded frame at the pad, rolling out along the ground and rising -- drawn whole from the frame number with nothing carried over.
+
+Change first: the four controls, then `ignition` and `liftoff`, the two frames the whole film is cut around. Deeper: [Thinking in frames](thinking-in-frames.md) and [Drawing on canvas](canvas.md).
 
 ## Ideas to build next
 
