@@ -139,16 +139,22 @@ const exhaust = (frame: number, frames: number, flameColor: string): CanvasDraw 
     context.quadraticCurveTo(halfWidth * 0.9 * thrust, reach * 0.55, halfWidth * thrust, 0);
     context.closePath();
     context.fill();
-    const spill = (wanted - groundGap) * 0.9;
+    // The spill: what did not fit runs out along the ground below the fins as a few low, ragged, flickering tongues,
+    // never a wide solid shape, which reads as wings.
+    const spill = (wanted - groundGap) * 0.8;
     if (spill <= 0) continue;
+    const floor = groundGap + 34;
     for (const side of [-1, 1]) {
-      const thickness = halfWidth * 1.3 * thrust;
-      context.beginPath();
-      context.moveTo(0, reach - thickness);
-      context.quadraticCurveTo(side * spill * 0.5, reach - thickness * 1.6, side * spill, reach - thickness * 0.3);
-      context.quadraticCurveTo(side * spill * 0.5, reach + thickness * 0.2, 0, reach);
-      context.closePath();
-      context.fill();
+      for (let tongue = 0; tongue < 3; tongue += 1) {
+        const run = spill * (0.45 + 0.55 * seededRandom(`spill-${frame}-${side}-${tongue}-${length}`));
+        const thickness = halfWidth * 0.55 * thrust * (0.7 + 0.3 * seededRandom(`thick-${frame}-${side}-${tongue}`));
+        context.beginPath();
+        context.moveTo(side * 20, floor - thickness);
+        context.quadraticCurveTo(side * run * 0.5, floor - thickness * 2.2, side * run, floor - thickness * 0.4);
+        context.quadraticCurveTo(side * run * 0.55, floor + thickness * 0.3, side * 20, floor + thickness * 0.2);
+        context.closePath();
+        context.fill();
+      }
     }
   }
   context.restore();
