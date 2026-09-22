@@ -40,7 +40,7 @@ const liftoff = 96;
  * parameter -- which is what SVG's pathLength="1" dash offset also means.
  */
 const curve: readonly [Point, Point, Point, Point] = [
-  { x: padX, y: padY }, { x: padX + 30, y: 400 }, { x: padX + 240, y: 60 }, { x: padX + 700, y: -360 },
+  { x: padX, y: padY }, { x: padX, y: 380 }, { x: padX + 240, y: 60 }, { x: padX + 700, y: -360 },
 ];
 const bezier = (t: number): Point => {
   const [a, b, c, d] = curve;
@@ -122,7 +122,7 @@ const exhaust = (frame: number, frames: number, flameColor: string): CanvasDraw 
   const at = along(progressAt(frame, frames));
   context.save();
   context.translate(at.x, at.y);
-  context.rotate(frame >= liftoff ? at.heading + Math.PI / 2 : 0);
+  context.rotate((at.heading + Math.PI / 2) * (frame >= liftoff ? mapRange(progressAt(frame, frames), [0, 0.15], [0, 1], { clamp: true, ease: easing.easeInOut }) : 0));
   // Near the pad the flame has nowhere to go but out: it is cut off at the ground, and what does not fit spills sideways along the pad.
   const groundGap = Math.max(10, padY + 8 - at.y);
   const layers: readonly (readonly [number, number, string])[] = [
@@ -166,7 +166,10 @@ function RocketLaunch({ rocket, flame, sky, caption }: Props) {
   const fps = film.frameRate;
   const progress = progressAt(frame, film.frames);
   const at = along(progress);
-  const heading = frame >= liftoff ? (at.heading + Math.PI / 2) * (180 / Math.PI) : 0;
+  // The first control point is straight above the pad, so the curve leaves vertically; the lean is then taken on
+  // gradually over the first stretch rather than snapped to at liftoff, which read as a wobble on the pad.
+  const lean = frame >= liftoff ? mapRange(progress, [0, 0.15], [0, 1], { clamp: true, ease: easing.easeInOut }) : 0;
+  const heading = (at.heading + Math.PI / 2) * (180 / Math.PI) * lean;
   // The shake: a seeded jolt, biggest at ignition, gone by the time the rocket is clear of the pad.
   const shake = Math.max(0, 1 - (frame - ignition) / 40) * (frame >= ignition ? 1 : 0);
   const jolt = { x: (seededRandom(`jx-${frame}`) - 0.5) * 28 * shake, y: (seededRandom(`jy-${frame}`) - 0.5) * 22 * shake };
