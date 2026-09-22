@@ -181,21 +181,25 @@ Change first: `bpm` in `tempo`, and `frames` alongside it. Then the `words` arra
 
 <video src="media/rocket-launch.mp4" poster="media/rocket-launch.jpg" controls muted loop playsinline width="720"></video>
 
-A countdown, ignition, and a rocket climbing away along a trajectory that draws itself on behind it. It teaches three things. `<Cue>` cuts the film into its beats, so the count, the ignition and the climb are each written against a clock that starts at zero. The trajectory is the oldest trick for "a line being drawn": an SVG path with `stroke-dashoffset` set from the frame. And the camera shake is nothing more than a seeded offset of the whole frame that dies away, which sells the weight of the launch better than any amount of flame.
+A countdown, ignition, and a rocket climbing away along a trajectory that draws itself on behind it. It teaches three things. `<Cue>` cuts the film into its beats, so the count, the ignition and the climb are each written against a clock that starts at zero. The trajectory is one cubic curve sampled by arc length, and the rocket's position, its heading and the line's draw-on all read that one table. And the camera shake is nothing more than a seeded offset of the whole frame that dies away, which sells the weight of the launch better than any amount of flame.
 
 ```tsx excerpt=examples/recipes/rocket-launch.tsx
-  const thrust = frame < ignition ? 0 : Math.min(1, (frame - ignition) / 8);
-  // The shake: a seeded jolt, biggest at ignition, gone by the time the rocket is clear of the pad.
-  const shake = Math.max(0, 1 - (frame - ignition) / 40) * (frame >= ignition ? 1 : 0);
-  const jolt = { x: (seededRandom(`jx-${frame}`) - 0.5) * 28 * shake, y: (seededRandom(`jy-${frame}`) - 0.5) * 22 * shake };
-  // The trajectory draws itself on behind the rocket: the dash offset is how much of the path is still hidden.
-  const pathLength = 2400;
-  const drawn = mapRange(frame, [liftoff, film.frames], [0, 1], { clamp: true, ease: easing.easeIn });
+/** The point and heading (radians, screen space) a fraction of the way along the trajectory by distance. */
+const along = (fraction: number): Point & { readonly heading: number } => {
+  const wanted = Math.max(0, Math.min(1, fraction)) * totalLength;
+  let index = 1;
+  while (index < lengths.length - 1 && lengths[index]! < wanted) index += 1;
+  const from = samples[index - 1]!;
+  const to = samples[index]!;
+  const span = lengths[index]! - lengths[index - 1]!;
+  const t = span > 0 ? (wanted - lengths[index - 1]!) / span : 0;
+  return { x: from.x + (to.x - from.x) * t, y: from.y + (to.y - from.y) * t, heading: Math.atan2(to.y - from.y, to.x - from.x) };
+};
 ```
 
-`seededRandom` keyed on the frame is what makes the shake honest: frame 90 jolts the same way every time it is asked for, so a scrub, an export and a preview agree. The smoke is one `<Canvas2D>` -- a hundred and sixty puffs, each born on its own seeded frame at the pad, rolling out along the ground and rising -- drawn whole from the frame number with nothing carried over.
+The line is an SVG path with `pathLength="1"`, a dash of `1` and an offset of `1 - progress`: with `pathLength` set, the offset is a fraction of the arc length, which is the same measure `along` uses, so the line ends exactly under the rocket. The first version of this recipe drew the line from one formula and flew the rocket by another, and the two parted company halfway up; one table for both is the fix. The exhaust is one `<Canvas2D>`: soft radial-gradient puffs on the pad, a contrail of puffs left where the nozzle was on earlier frames (`along(progressAt(frame - back))`), and a four-layer flame turned to the heading.
 
-Change first: the four controls, then `ignition` and `liftoff`, the two frames the whole film is cut around. Deeper: [Thinking in frames](thinking-in-frames.md) and [Drawing on canvas](canvas.md).
+Change first: the four controls, then `ignition` and `liftoff`, the two frames the whole film is cut around, and the four points of `curve`. Deeper: [Thinking in frames](thinking-in-frames.md) and [Drawing on canvas](canvas.md).
 
 ## Ideas to build next
 

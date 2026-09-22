@@ -19,7 +19,7 @@ let drawCalls = 0;
 const recordingContext = (): CanvasRenderingContext2D => new Proxy({} as Record<string, unknown>, {
   get: (target, name) => {
     if (name in target) return target[name as string];
-    return (..._args: unknown[]) => { drawCalls += 1; return name === "createLinearGradient" ? { addColorStop: () => undefined } : undefined; };
+    return (..._args: unknown[]) => { drawCalls += 1; return name === "createLinearGradient" || name === "createRadialGradient" ? { addColorStop: () => undefined } : undefined; };
   },
   set: (target, name, value) => { target[name as string] = value; return true; },
 }) as unknown as CanvasRenderingContext2D;
