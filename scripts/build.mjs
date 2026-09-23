@@ -1,4 +1,4 @@
-import { copyFile, cp, mkdir, readdir, rm } from "node:fs/promises";
+import { copyFile, cp, mkdir, readFile, rm } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { build } from "esbuild";
 
@@ -31,12 +31,17 @@ await copyFile("packages/cli/runner/package.json", "packages/cli/dist/runner/pac
 await rm("packages/mcp/content", { force: true, recursive: true });
 await cp("docs", "packages/mcp/content/docs", { recursive: true });
 await mkdir("packages/mcp/content/examples/recipes", { recursive: true });
-for (const file of await readdir("examples/recipes")) {
-  if (file.endsWith(".test.tsx") || file === "index.ts") continue;
+const recipeManifest = "examples/recipes/manifest.json";
+const recipes = JSON.parse(await readFile(recipeManifest, "utf8"));
+await copyFile(recipeManifest, "packages/mcp/content/examples/manifest.json");
+await copyFile(recipeManifest, "packages/mcp/content/examples/recipes/manifest.json");
+for (const { file } of recipes) {
+  if (typeof file !== "string" || !/^[a-z0-9-]+\.tsx$/.test(file)) {
+    throw new Error(`Invalid recipe file in ${recipeManifest}: ${String(file)}`);
+  }
   await copyFile(`examples/recipes/${file}`, `packages/mcp/content/examples/${file}`);
   await copyFile(`examples/recipes/${file}`, `packages/mcp/content/examples/recipes/${file}`);
 }
-for (const file of await readdir("examples")) {
-  if (!file.endsWith(".tsx")) continue;
+for (const file of ["cinematic-overlay.tsx", "coding-tutorial.tsx", "kinetic-type.tsx", "tiny-cosmic-disco.tsx"]) {
   await copyFile(`examples/${file}`, `packages/mcp/content/examples/${file}`);
 }

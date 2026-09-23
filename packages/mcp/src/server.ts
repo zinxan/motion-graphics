@@ -26,7 +26,7 @@ Importable: ${allowedPackages.join(", ")}.`;
 export function createServer(): McpServer {
   const docs = loadDocs();
   const examples = loadExamples();
-  const server = new McpServer({ name: "zxn-motion", version: "0.1.1" }, { instructions: authoringRules });
+  const server = new McpServer({ name: "zxn-motion", version: "0.1.2" }, { instructions: authoringRules });
 
   server.registerTool("authoring_rules", {
     title: "Authoring rules",
