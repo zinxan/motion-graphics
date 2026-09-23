@@ -28,7 +28,7 @@ Here is a film that does everything wrong. It type-checks, it even looks fine if
 
 ```tsx film expect-warnings
 import { useEffect, useState } from "react";
-import { FullFrame, defineFilm } from "@zxn/motion-core";
+import { FullFrame, defineFilm } from "@matildeene/motion-core";
 
 type Props = { readonly label: string; readonly accent: string };
 
@@ -162,7 +162,7 @@ Everything above makes a film correct. None of it makes a film good. The rest of
 **Stagger related items by 2–4 frames.** A list whose rows arrive together is one event; a list whose rows arrive 20 frames apart is a queue you are waiting in. Two to four frames at 30 fps reads as one gesture with direction in it. `<Cue>` makes this trivial, because each row animates from its own frame zero:
 
 ```tsx film
-import { Cue, FullFrame, defineFilm, springValue, useTimeline } from "@zxn/motion-core";
+import { Cue, FullFrame, defineFilm, springValue, useTimeline } from "@matildeene/motion-core";
 
 type Props = { readonly heading: string; readonly steps: string; readonly accent: string };
 

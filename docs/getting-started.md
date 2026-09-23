@@ -1,6 +1,6 @@
 ---
 title: Getting started
-summary: Build the library from source, write your first film, preview it in the browser player, and render it to MP4 or WebM from code or the command line.
+summary: Install the packages, write your first film, preview it in the browser player, and render it to MP4 or WebM from code or the command line.
 ---
 # Getting started
 
@@ -12,7 +12,14 @@ That is the whole idea. Everything else here — the player, the renderer, the C
 
 ## Install
 
-The library is not on npm yet, so you build it from source. You need Node 22 or newer.
+You need Node 22.12 or newer. In an existing React project, install the packages you need:
+
+```bash
+npm install @matildeene/motion-core @matildeene/motion-player @matildeene/motion-renderer
+npm install --save-dev @matildeene/motion-cli
+```
+
+For the example films and development tooling, clone the public repository:
 
 ```bash
 git clone https://github.com/zinxan/motion-graphics.git
@@ -21,14 +28,14 @@ npm install
 npm run check      # typecheck, tests, build
 ```
 
-`npm install` links the workspace packages together, so `@zxn/motion-core`, `@zxn/motion-player`, `@zxn/motion-renderer` and `@zxn/motion-cli` resolve by name from anywhere in the repo. Work in `examples/`, or point your own app's bundler at the built packages.
+The clone links its workspace packages together. Work in `examples/`, or use the published packages in your own app.
 
 ## Your first film
 
 A film is `defineFilm({...})` wrapped around a component. The definition carries the facts a host needs before it renders anything: the size, the frame rate, how many frames there are, and the props the component expects. An entry module exports them as an array named `films`.
 
 ```tsx film
-import { FullFrame, defineFilm, easing, mapRange, springValue, useTimeline } from "@zxn/motion-core";
+import { FullFrame, defineFilm, easing, mapRange, springValue, useTimeline } from "@matildeene/motion-core";
 
 type Props = {
   readonly headline: string;
@@ -88,12 +95,12 @@ At 30 fps, `frames: 120` is a four-second film.
 
 ## Preview it
 
-`@zxn/motion-player` gives you `<FilmPlayer>`: a viewport that scales the film to fit, a play/pause button, a restart and a scrubber. It takes a `FilmDescriptor`, which is what `describeFilm()` returns.
+`@matildeene/motion-player` gives you `<FilmPlayer>`: a viewport that scales the film to fit, a play/pause button, a restart and a scrubber. It takes a `FilmDescriptor`, which is what `describeFilm()` returns.
 
 ```tsx
-import { describeFilm } from "@zxn/motion-core";
-import { FilmPlayer } from "@zxn/motion-player";
-import "@zxn/motion-player/player.css";
+import { describeFilm } from "@matildeene/motion-core";
+import { FilmPlayer } from "@matildeene/motion-player";
+import "@matildeene/motion-player/player.css";
 import { films } from "./films";
 
 export const Preview = () => <FilmPlayer film={describeFilm(films[0]!)} loop />;
@@ -105,11 +112,11 @@ Drag the scrubber. A film that looks right playing and wrong under a scrub is a 
 
 ## Render it in the browser
 
-`@zxn/motion-renderer` mounts the same tree the player mounts, commits each exact frame, rasterises the DOM and encodes it through WebCodecs. Ask first whether the device can encode what you want:
+`@matildeene/motion-renderer` mounts the same tree the player mounts, commits each exact frame, rasterises the DOM and encodes it through WebCodecs. Ask first whether the device can encode what you want:
 
 ```ts
-import { canRenderFilm, renderFilm } from "@zxn/motion-renderer";
-import { describeFilm } from "@zxn/motion-core";
+import { canRenderFilm, renderFilm } from "@matildeene/motion-renderer";
+import { describeFilm } from "@matildeene/motion-core";
 import { films } from "./films";
 
 const film = describeFilm(films[0]!);
@@ -126,12 +133,12 @@ if (await canRenderFilm(film, "mp4-h264")) {
 
 ## Render it from the command line
 
-`@zxn/motion-cli` bundles a film entry and renders it in a sandboxed, hidden Electron window, which is the right shape for CI and for scripts.
+`@matildeene/motion-cli` bundles a film entry and renders it in a sandboxed, hidden Electron window, which is the right shape for CI and for scripts.
 
 ```bash
-zxn-motion render ./films.tsx opener ./out/opener.mp4
-zxn-motion render ./films.tsx opener ./out/opener.webm --props ./props.json
-zxn-motion render ./films.tsx opener ./out/opener.mp4 --force
+npm exec -- zxn-motion render ./films.tsx opener ./out/opener.mp4
+npm exec -- zxn-motion render ./films.tsx opener ./out/opener.webm --props ./props.json
+npm exec -- zxn-motion render ./films.tsx opener ./out/opener.mp4 --force
 ```
 
 The three positional arguments are the entry module, the film's `id` and the output path. The extension picks the preset: `.mp4` and `.mov` are H.264, `.webm` is VP9. Anything else is an error rather than a guess.
@@ -144,12 +151,12 @@ Codec availability depends on the host operating system and the Electron build. 
 
 | Package | What it gives you |
 | --- | --- |
-| `@zxn/motion-core` | `defineFilm`, the frame hooks, the timing primitives, the animation maths, `Canvas2D`, and the interface-film kit: `Stage`, `Camera`, `Pointer`, `Footage`. |
-| `@zxn/motion-player` | `<FilmPlayer>`: play, pause, seek and loop in the browser. |
-| `@zxn/motion-renderer` | `renderFilm()` and `canRenderFilm()`. |
-| `@zxn/motion-cli` | `zxn-motion render`. |
-| `@zxn/motion-graphics` | Declarative, frame-deterministic charts and callouts. |
-| `@zxn/motion-text` | Serializable 2D text styles, with one renderer for canvas and export. |
+| `@matildeene/motion-core` | `defineFilm`, the frame hooks, the timing primitives, the animation maths, `Canvas2D`, and the interface-film kit: `Stage`, `Camera`, `Pointer`, `Footage`. |
+| `@matildeene/motion-player` | `<FilmPlayer>`: play, pause, seek and loop in the browser. |
+| `@matildeene/motion-renderer` | `renderFilm()` and `canRenderFilm()`. |
+| `@matildeene/motion-cli` | `zxn-motion render`. |
+| `@matildeene/motion-graphics` | Declarative, frame-deterministic charts and callouts. |
+| `@matildeene/motion-text` | Serializable 2D text styles, with one renderer for canvas and export. |
 
 Dependencies point inward: CLI → renderer and player → core. Core has no player, renderer, Electron or filesystem dependency, so a host that only needs to define and mount films takes core alone.
 
@@ -165,5 +172,5 @@ The player and the renderer both mount `FilmSurface`, the same component, at one
 - [Tempo and music](tempo-and-music.md) — cutting to bars and beats.
 - [Interface films](interface-films.md) — stage, camera and pointer for showing software.
 - [Performance](performance.md) — what a frame costs and how to spend less.
-- [Recipes](recipes.md) — eight verified example films to read and steal from.
+- [Recipes](recipes.md) — nine verified recipes and the Tiny Cosmic Disco showcase film to read and remix.
 - [AI agents](ai-agents.md) — generating films, and the checker that grades them.

@@ -1,5 +1,5 @@
 {
-  "name": "@zxn/motion-renderer",
+  "name": "@matildeene/motion-renderer",
   "version": "0.1.0",
   "description": "WebCodecs MP4, QuickTime MOV, and WebM renderer for ZXN Motion films.",
   "license": "MIT",
@@ -24,7 +24,7 @@
     "mediabunny": "^1.44.0"
   },
   "peerDependencies": {
-    "@zxn/motion-core": "^0.1.0",
+    "@matildeene/motion-core": "^0.1.0",
     "react": ">=19.0.0",
     "react-dom": ">=19.0.0"
   },

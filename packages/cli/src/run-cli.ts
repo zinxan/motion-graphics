@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { createRequire } from "node:module";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import type { JsonObject } from "@zxn/motion-core";
+import type { JsonObject } from "@matildeene/motion-core";
 import { helpText, parseArgs } from "./args.js";
 import { buildRenderSite } from "./project-builder.js";
 

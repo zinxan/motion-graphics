@@ -2,7 +2,7 @@
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { FilmSurface, describeFilm } from "@zxn/motion-core";
+import { FilmSurface, describeFilm } from "@matildeene/motion-core";
 import { films } from "./index";
 import manifest from "./manifest.json";
 

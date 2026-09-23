@@ -19,10 +19,11 @@ import { checkFilm, parseDoc } from "../packages/mcp/dist/index.js";
 import { canTypeCheck } from "../packages/mcp/dist/check.js";
 
 // Without the SDK beside it the checker finds no type errors at all, and "nothing wrong" would be a lie.
-if (!canTypeCheck()) { console.error("Cannot verify: @zxn/motion-core is not installed. Run `npm install && npm run build` first."); process.exit(1); }
+if (!canTypeCheck()) { console.error("Cannot verify: @matildeene/motion-core is not installed. Run `npm install && npm run build` first."); process.exit(1); }
 
 const root = path.resolve(import.meta.dirname, "..");
 const docsDirectory = path.join(root, "docs");
+const packagedDocsDirectory = path.join(root, "packages/mcp/content/docs");
 const pages = readdirSync(docsDirectory).filter((file) => file.endsWith(".md")).sort();
 const problems = [];
 const squash = (text) => text.replace(/\s+/g, " ").trim();
@@ -31,11 +32,14 @@ let films = 0, excerpts = 0, fragments = 0;
 for (const page of pages) {
   const text = readFileSync(path.join(docsDirectory, page), "utf8");
   const fail = (line, message) => problems.push(`${page}:${line}  ${message}`);
+  const packagedPage = path.join(packagedDocsDirectory, page);
+  if (!existsSync(packagedPage) || readFileSync(packagedPage, "utf8") !== text) fail(1, "packaged MCP copy is missing or stale; run npm run build.");
   const doc = parseDoc(page.replace(/\.md$/, ""), text);
   if (!/^---\n(?:[^\n]*\n)*?title:/.test(text) || !doc.summary) fail(1, "needs front matter with a title and a summary.");
 
   for (const match of text.matchAll(/\]\((?!https?:|#|mailto:)([^)#\s]+)(#[^)]*)?\)/g)) {
     if (!existsSync(path.resolve(docsDirectory, match[1]))) fail(text.slice(0, match.index).split("\n").length, `link to "${match[1]}" does not exist.`);
+    if (!existsSync(path.resolve(packagedDocsDirectory, match[1]))) fail(text.slice(0, match.index).split("\n").length, `packaged link to "${match[1]}" does not exist.`);
   }
 
   for (const match of text.matchAll(/^```(\w+)([^\n]*)\n([\s\S]*?)^```/gm)) {

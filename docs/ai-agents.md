@@ -20,11 +20,11 @@ None of that is fixed by a longer prompt. It is fixed by giving the agent the ru
 
 ## The server
 
-`@zxn/motion-mcp` is a Model Context Protocol server, binary `zxn-motion-mcp`, that serves three things:
+`@matildeene/motion-mcp` is a Model Context Protocol server, binary `zxn-motion-mcp`, that serves three things:
 
 - **the authoring rules**, short enough to be read at the start of every session;
 - **the documentation and the verified recipes** — the same files this site publishes and the test suite mounts, not a copy written for the agent. Nothing it is shown can be an example that has stopped working;
-- **a checker** that type-checks source against the real `@zxn/motion-core` declarations and looks for the habits above. Nothing is executed.
+- **a checker** that type-checks source against the real `@matildeene/motion-core` declarations and looks for the habits above. Nothing is executed.
 
 ### Tools
 
@@ -61,7 +61,7 @@ The habits it detects, exactly:
 
 The habit rules are patterns over the source with its comments blanked out, so a comment that says "never call `Date.now()`" is not reported as a call to it. They are still patterns: a method of your own called `play()` will be flagged, and that warning can be ignored.
 
-Only source the agent supplied is reported; a library's own declarations are not its business. If `@zxn/motion-core` cannot be resolved beside the server or in the directory it was started from, types are not checked and the result says so rather than reporting no type errors. A package a film may import but which is not installed beside the checker, such as `lottie-web` in a fresh clone, is reported as a warning that its code could not be type-checked, not as an error in the film.
+Only source the agent supplied is reported; a library's own declarations are not its business. If `@matildeene/motion-core` cannot be resolved beside the server or in the directory it was started from, types are not checked and the result says so rather than reporting no type errors. A package a film may import but which is not installed beside the checker, such as `lottie-web` in a fresh clone, is reported as a warning that its code could not be type-checked, not as an error in the film.
 
 ### The rules it serves
 
@@ -80,24 +80,22 @@ Only source the agent supplied is reported; a library's own declarations are not
 8. Before proposing source: call search_docs for the technique, get_example for the nearest recipe, then check_film on what you wrote and fix every error and warning.
 ```
 
-The list ends with the packages a film may import: `react`, `react/jsx-runtime`, `@zxn/motion-core`, `@zxn/motion-graphics`, `@zxn/motion-text`, `@zxn/ui`, `lucide-react`, `clsx`, `tailwind-merge`, `class-variance-authority`, `radix-ui`, `d3-scale`, `d3-shape`, `d3-interpolate`, `d3-ease`, `gsap`, `lottie-web`, `simplex-noise` and `culori`.
+The list ends with the packages a film may import: `react`, `react/jsx-runtime`, `@matildeene/motion-core`, `@matildeene/motion-graphics`, `@matildeene/motion-text`, `@zxn/ui`, `lucide-react`, `clsx`, `tailwind-merge`, `class-variance-authority`, `radix-ui`, `d3-scale`, `d3-shape`, `d3-interpolate`, `d3-ease`, `gsap`, `lottie-web`, `simplex-noise` and `culori`. `@zxn/ui` is private to ZXN Studio and is not needed to make films with the public packages.
 
 ## Setup
 
-The package is not on npm yet, so it runs from a clone. Node 22 or later.
+Node 22 or later is required. Run the published MCP server with npm:
 
 ```bash
-git clone https://github.com/zinxan/motion-graphics.git
-cd motion-graphics
-npm install && npm run build
+npx --yes @matildeene/motion-mcp
 ```
 
-That produces `packages/mcp/dist/bin.js`. Run it with an absolute path — an agent's working directory is not yours.
+The package includes its documentation and examples, so the server does not depend on your working directory.
 
 Claude Code:
 
 ```bash
-claude mcp add zxn-motion -- node /absolute/path/to/motion-graphics/packages/mcp/dist/bin.js
+claude mcp add zxn-motion -- npx --yes @matildeene/motion-mcp
 ```
 
 The same thing as a checked-in `.mcp.json` at the root of the project you are making films in:
@@ -106,8 +104,8 @@ The same thing as a checked-in `.mcp.json` at the root of the project you are ma
 {
   "mcpServers": {
     "zxn-motion": {
-      "command": "node",
-      "args": ["/absolute/path/to/motion-graphics/packages/mcp/dist/bin.js"]
+      "command": "npx",
+      "args": ["--yes", "@matildeene/motion-mcp"]
     }
   }
 }
@@ -119,8 +117,8 @@ Cursor, in `.cursor/mcp.json`:
 {
   "mcpServers": {
     "zxn-motion": {
-      "command": "node",
-      "args": ["/absolute/path/to/motion-graphics/packages/mcp/dist/bin.js"]
+      "command": "npx",
+      "args": ["--yes", "@matildeene/motion-mcp"]
     }
   }
 }
@@ -176,7 +174,7 @@ Anything particle-like goes on one `<Canvas2D>`.
 This is the film an unguided agent writes when asked for falling snow. It compiles, and every frame of it is wrong in a different way.
 
 ```tsx film expect-warnings
-import { FullFrame, defineFilm, useTimeline } from "@zxn/motion-core";
+import { FullFrame, defineFilm, useTimeline } from "@matildeene/motion-core";
 
 type Props = { readonly color: string };
 

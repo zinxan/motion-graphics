@@ -1,6 +1,6 @@
 import { Pause, Play, RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FilmSurface, type FilmDescriptor, type JsonObject } from "@zxn/motion-core";
+import { FilmSurface, type FilmDescriptor, type JsonObject } from "@matildeene/motion-core";
 import { usePlaybackClock } from "./use-playback-clock.js";
 
 type FilmPlayerProps = Readonly<{
@@ -40,8 +40,8 @@ export function FilmPlayer({ film, inputProps, className, controls = true, loop 
   }, [film.height, film.width]);
 
   return (
-    <div className={`zxn-player ${controls ? "" : "zxn-player--no-controls"} ${className ?? ""}`} data-slot="film-player">
-      <div ref={viewportRef} className="zxn-player__viewport">
+    <div className={["zxn-player", className].filter(Boolean).join(" ")} data-slot="film-player">
+      <div ref={viewportRef} className="zxn-player__viewport" style={{ aspectRatio: film.width / film.height }}>
         <div className="zxn-player__frame" style={{ width: film.width * scale, height: film.height * scale }}>
           <div className="zxn-player__surface" style={{ transform: `scale(${scale})` }}>
             <FilmSurface film={film} frame={frame} inputProps={inputProps} />

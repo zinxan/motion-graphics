@@ -166,7 +166,7 @@ Two things make an id useful:
 Every prop here is adjustable, and the film derives everything from the frame.
 
 ```tsx film
-import { FullFrame, defineFilm, easing, mapRange, springValue, useTimeline } from "@zxn/motion-core";
+import { FullFrame, defineFilm, easing, mapRange, springValue, useTimeline } from "@matildeene/motion-core";
 
 /*
  * A stat card: one number, said well.
@@ -265,7 +265,7 @@ Seven props, seven controls. `change` is signed and the film picks both the arro
 The CLI merges a JSON file over the defaults, so the same film renders a hundred cards from a hundred files:
 
 ```bash
-zxn-motion render ./films.tsx stat-card ./out/q3.mp4 --props ./q3.json
+npm exec -- zxn-motion render ./films.tsx stat-card ./out/q3.mp4 --props ./q3.json
 ```
 
 ```json

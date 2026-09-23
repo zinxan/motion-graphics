@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { renderMotionGraphic } from "./render";
+import { renderMotionGraphic } from "./render.js";
 
 describe("renderMotionGraphic", () => {
   it("draws a deterministic animated chart from plain data", () => {
@@ -19,6 +19,6 @@ describe("renderMotionGraphic", () => {
     }, { width: 1280, height: 720, localSeconds: 1, durationSeconds: 8 });
     expect(roundRect).toHaveBeenCalledTimes(3);
     expect(fillText).toHaveBeenCalledWith("Energy", -560, -296, 1120);
-    expect(fillText).toHaveBeenCalledWith("2030", 280, 344, 504);
+    expect(fillText).toHaveBeenCalledWith("2030", 280, 314, 504);
   });
 });

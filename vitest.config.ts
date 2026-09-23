@@ -7,12 +7,12 @@ const source = (name: string): string => fileURLToPath(new URL(`./packages/${nam
 export default defineConfig({
   resolve: {
     alias: {
-      "@zxn/motion-core": source("core"),
-      "@zxn/motion-graphics": source("graphics"),
-      "@zxn/motion-text": source("text"),
-      "@zxn/motion-player": source("player"),
-      "@zxn/motion-renderer": source("renderer"),
-      "@zxn/motion-mcp": source("mcp"),
+      "@matildeene/motion-core": source("core"),
+      "@matildeene/motion-graphics": source("graphics"),
+      "@matildeene/motion-text": source("text"),
+      "@matildeene/motion-player": source("player"),
+      "@matildeene/motion-renderer": source("renderer"),
+      "@matildeene/motion-mcp": source("mcp"),
     },
   },
   test: { globals: true, include: ["packages/**/*.test.{ts,tsx}", "examples/**/*.test.{ts,tsx}"] },

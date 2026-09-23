@@ -1,4 +1,4 @@
-# `@zxn/motion-mcp`
+# `@matildeene/motion-mcp`
 
 A [Model Context Protocol](https://modelcontextprotocol.io) server that teaches an AI agent to write good ZXN Motion films. It serves the same documentation and the same verified example films the website publishes, and checks the source an agent writes before anyone has to look at it.
 
@@ -16,17 +16,16 @@ Left alone, an agent builds character rain from a `<div>` per glyph, reaches for
 
 ## Run it
 
-Not on npm yet, so from a clone:
+Run the published server with npm:
 
 ```bash
-git clone https://github.com/zinxan/motion-graphics.git
-cd motion-graphics && npm install && npm run build
+npx --yes @matildeene/motion-mcp
 ```
 
 Claude Code:
 
 ```bash
-claude mcp add zxn-motion -- node /absolute/path/to/motion-graphics/packages/mcp/dist/bin.js
+claude mcp add zxn-motion -- npx --yes @matildeene/motion-mcp
 ```
 
 Any client that reads an `mcpServers` map (`.mcp.json`, `.cursor/mcp.json`):
@@ -34,9 +33,9 @@ Any client that reads an `mcpServers` map (`.mcp.json`, `.cursor/mcp.json`):
 ```json
 {
   "mcpServers": {
-    "zxn-motion": { "command": "node", "args": ["/absolute/path/to/motion-graphics/packages/mcp/dist/bin.js"] }
+    "zxn-motion": { "command": "npx", "args": ["--yes", "@matildeene/motion-mcp"] }
   }
 }
 ```
 
-See [Writing films with an AI agent](../../docs/ai-agents.md) for the workflow and a rules file to drop into a project.
+See [Writing films with an AI agent](https://github.com/zinxan/motion-graphics/blob/main/docs/ai-agents.md) for the workflow and a rules file to drop into a project.

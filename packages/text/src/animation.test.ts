@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { evaluateTextAnimation, restingTextAnimation } from "./animation";
+import { evaluateTextAnimation, restingTextAnimation } from "./animation.js";
 
 const at = (localSeconds: number, durationSeconds = 5, characters = 10) =>
   ({ localSeconds, durationSeconds, characters });

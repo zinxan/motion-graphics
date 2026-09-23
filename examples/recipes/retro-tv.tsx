@@ -1,4 +1,4 @@
-import { Canvas2D, FullFrame, defineFilm, easing, mapRange, seededRandom, springValue, useTimeline, type CanvasDraw } from "@zxn/motion-core";
+import { Canvas2D, FullFrame, defineFilm, easing, mapRange, seededRandom, springValue, useTimeline, type CanvasDraw } from "@matildeene/motion-core";
 
 /*
  * A cartoon television with a play button, the kind a 1960s short would open on.

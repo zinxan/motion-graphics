@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import { FullFrame, defineFilm, useVirtualTime } from "@zxn/motion-core";
+import { FullFrame, defineFilm, useVirtualTime } from "@matildeene/motion-core";
 
 /*
  * Driving GSAP from the frame.

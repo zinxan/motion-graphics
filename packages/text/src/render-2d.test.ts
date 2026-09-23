@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { createTextStyle2D } from "./defaults";
-import { textBackgroundOutline } from "./background-shape";
-import { renderText2D } from "./render-2d";
+import { createTextStyle2D } from "./defaults.js";
+import { textBackgroundOutline } from "./background-shape.js";
+import { renderText2D } from "./render-2d.js";
 
 type Call = Readonly<{ op: string; detail?: string }>;
 

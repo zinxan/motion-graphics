@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { createTextStyle3D, defaultTextStyle3D } from "./defaults";
-import { textMaterialPresets } from "./presets";
+import { createTextStyle3D, defaultTextStyle3D } from "./defaults.js";
+import { textMaterialPresets } from "./presets.js";
 
 describe("3D text styles", () => {
   it("creates deeply independent geometry, material, camera, and lighting values", () => {

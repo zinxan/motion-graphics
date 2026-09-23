@@ -2,8 +2,8 @@ import { copyFile, mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { build } from "vite";
-import type { JsonObject } from "@zxn/motion-core";
-import type { RenderFormatId } from "@zxn/motion-renderer";
+import type { JsonObject } from "@matildeene/motion-core";
+import type { RenderFormatId } from "@matildeene/motion-renderer";
 
 const documentHtml = (stylesheet: boolean): string => `<!doctype html>
 <html lang="en">
@@ -66,8 +66,8 @@ globalThis.zxnFootage = {
 
 function browserEntry(entryPath: string, filmId: string, format: RenderFormatId, props: JsonObject): string {
   return `import "./footage-provider.js";
-import { describeFilm } from "@zxn/motion-core";
-import { renderFilm } from "@zxn/motion-renderer";
+import { describeFilm } from "@matildeene/motion-core";
+import { renderFilm } from "@matildeene/motion-renderer";
 import * as userEntry from ${JSON.stringify(entryPath)};
 
 async function render() {
@@ -147,8 +147,8 @@ export async function buildRenderSite(options: RenderSiteOptions): Promise<strin
     resolve: {
       dedupe: ["react", "react-dom"],
       alias: [
-        { find: "@zxn/motion-core", replacement: fileURLToPath(import.meta.resolve("@zxn/motion-core")) },
-        { find: "@zxn/motion-renderer", replacement: fileURLToPath(import.meta.resolve("@zxn/motion-renderer")) },
+        { find: "@matildeene/motion-core", replacement: fileURLToPath(import.meta.resolve("@matildeene/motion-core")) },
+        { find: "@matildeene/motion-renderer", replacement: fileURLToPath(import.meta.resolve("@matildeene/motion-renderer")) },
         { find: "mediabunny", replacement: fileURLToPath(import.meta.resolve("mediabunny")) },
         ...Object.entries(options.alias ?? {}).map(([find, replacement]) => ({ find, replacement })),
       ],

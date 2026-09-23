@@ -1,4 +1,4 @@
-import { FullFrame, defineFilm, easing, mapRange, springValue, useTimeline } from "@zxn/motion-core";
+import { FullFrame, defineFilm, easing, mapRange, springValue, useTimeline } from "@matildeene/motion-core";
 
 /*
  * A lower third: the name strap under someone talking.

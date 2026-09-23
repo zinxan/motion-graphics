@@ -1,4 +1,4 @@
-import { Canvas2D, FullFrame, defineFilm, seededRandom, type CanvasDraw } from "@zxn/motion-core";
+import { Canvas2D, FullFrame, defineFilm, seededRandom, type CanvasDraw } from "@matildeene/motion-core";
 
 /*
  * Matrix-style digital rain, on one canvas.

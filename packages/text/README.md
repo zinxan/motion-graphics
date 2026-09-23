@@ -1,11 +1,11 @@
-# `@zxn/motion-text`
+# `@matildeene/motion-text`
 
 Deterministic, serializable text styles for ZXN Motion projects. The package is independent of React and the editor, so the same style data and renderer are used by the live canvas and exported frames.
 
 ## 2D text
 
 ```ts
-import { createTextStyle2D, renderText2D } from "@zxn/motion-text";
+import { createTextStyle2D, renderText2D } from "@matildeene/motion-text";
 
 const style = createTextStyle2D({
   fontSize: 96,
@@ -24,7 +24,7 @@ renderText2D(context, "FRAME\nFORWARD", style);
 Engraved text is an alpha-derived surface finish rather than opaque 3D geometry. Its centre remains transparent so the photographed surface texture survives, while opposing internal highlight and shadow edges create the recessed profile. Deterministic edge breakup, material-opacity variation, and wear stop the glyph silhouette looking mathematically perfect:
 
 ```ts
-import { createTextStyle2D, createTextSurfaceRelief } from "@zxn/motion-text";
+import { createTextStyle2D, createTextSurfaceRelief } from "@matildeene/motion-text";
 
 const engraved = createTextStyle2D({
   fontSize: 64,
@@ -50,4 +50,4 @@ The catalog includes generic system choices plus common and macOS-oriented stack
 
 ## 3D model
 
-`TextStyle3D` defines serializable font selection, extrusion, bevel, and material settings. Applications supply camera, lighting, anchor, and shadow-catcher values to the optional `@zxn/motion-text-three` adapter. That dependency is intentionally kept out of the 2D package surface. Built-in adapter fonts use stable IDs, while the string-based font reference also permits an application to register reviewed custom typeface data without coupling saved projects to Three.js objects.
+`TextStyle3D` defines serializable font selection, extrusion, bevel, and material settings. Applications supply camera, lighting, anchor, and shadow-catcher values to the optional `@matildeene/motion-text-three` adapter. That dependency is intentionally kept out of the 2D package surface. Built-in adapter fonts use stable IDs, while the string-based font reference also permits an application to register reviewed custom typeface data without coupling saved projects to Three.js objects.

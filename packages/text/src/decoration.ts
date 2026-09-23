@@ -1,4 +1,4 @@
-import type { PlateRect } from "./background-shape";
+import type { PlateRect } from "./background-shape.js";
 
 /*
  * Decorative motifs drawn around a title.

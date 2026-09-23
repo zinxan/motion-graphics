@@ -5,7 +5,7 @@ import ts from "typescript";
 
 /*
  * Checks a film's source the way the SDK will meet it: type errors against the
- * real `@zxn/motion-core` declarations, imports a film is not allowed, and the
+ * real `@matildeene/motion-core` declarations, imports a film is not allowed, and the
  * handful of habits that make a film slow or unrepeatable.
  *
  * Nothing is executed. An agent can call this as often as it likes on source
@@ -17,7 +17,7 @@ export type FilmSource = Readonly<{ entryFile: string; files: Readonly<Record<st
 
 /** What a film may import: React, the SDK, and the seekable, deterministic libraries ZXN Studio bundles. */
 export const allowedPackages = [
-  "react", "react/jsx-runtime", "@zxn/motion-core", "@zxn/motion-graphics", "@zxn/motion-text", "@zxn/ui",
+  "react", "react/jsx-runtime", "@matildeene/motion-core", "@matildeene/motion-graphics", "@matildeene/motion-text", "@zxn/ui",
   "lucide-react", "clsx", "tailwind-merge", "class-variance-authority", "radix-ui",
   "d3-scale", "d3-shape", "d3-interpolate", "d3-ease", "gsap", "lottie-web", "simplex-noise", "culori",
 ] as const;
@@ -79,14 +79,14 @@ function importFindings(file: string, text: string): Finding[] {
 function resolutionRoot(): string | undefined {
   const require = createRequire(import.meta.url);
   try {
-    const core = require.resolve("@zxn/motion-core/package.json");
+    const core = require.resolve("@matildeene/motion-core/package.json");
     return path.resolve(path.dirname(core), "../../..");
   } catch {
-    return existsSync(path.join(process.cwd(), "node_modules/@zxn/motion-core")) ? process.cwd() : undefined;
+    return existsSync(path.join(process.cwd(), "node_modules/@matildeene/motion-core")) ? process.cwd() : undefined;
   }
 }
 
-const workspacePackages = { "@zxn/motion-core": "core", "@zxn/motion-graphics": "graphics", "@zxn/motion-text": "text" } as const;
+const workspacePackages = { "@matildeene/motion-core": "core", "@matildeene/motion-graphics": "graphics", "@matildeene/motion-text": "text" } as const;
 
 function workspaceSources(root: string): Pick<ts.CompilerOptions, "paths"> {
   // Absolute targets, so no `baseUrl` is needed (TypeScript 6 deprecates it).

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { hitTestMotionGraphicElement, layoutMotionGraphicElements } from "./layout";
-import type { MotionGraphic } from "./types";
+import { hitTestMotionGraphicElement, layoutMotionGraphicElements } from "./layout.js";
+import type { MotionGraphic } from "./types.js";
 
 const graphic: MotionGraphic = {
   kind: "chart", chart: "bar", title: "Demand", subtitle: "Annual",
@@ -22,5 +22,13 @@ describe("motion graphic element layout", () => {
     expect(hitTestMotionGraphicElement(graphic, { width: 1280, height: 720 }, {
       x: bar!.x + bar!.width / 2, y: bar!.y + bar!.height / 2,
     })?.id).toBe("bar:0:1");
+  });
+
+  it("keeps chart labels inside the frame", () => {
+    const labels = layoutMotionGraphicElements(graphic, { width: 1280, height: 720 })
+      .filter(({ id }) => id.startsWith("label:"));
+
+    expect(labels).toHaveLength(2);
+    expect(labels.every(({ y, height }) => y + height <= 720 / 2)).toBe(true);
   });
 });

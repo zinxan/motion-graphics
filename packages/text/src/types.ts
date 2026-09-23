@@ -1,4 +1,4 @@
-import type { TextDecoration } from "./decoration";
+import type { TextDecoration } from "./decoration.js";
 
 export type TextAlign = "left" | "center" | "right";
 export type TextFill =

@@ -11,8 +11,11 @@
     "build": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit --pretty false",
     "test": "vitest run",
-    "check": "npm run typecheck && npm run test && npm run build && npm run docs:verify",
-    "docs:verify": "node scripts/docs-verify.mjs"
+    "check": "npm run typecheck && npm run test && npm run build && npm run packages:verify && npm run docs:verify",
+    "packages:verify": "node scripts/verify-packages.mjs",
+    "docs:verify": "node scripts/docs-verify.mjs",
+    "release": "node scripts/publish.mjs",
+    "release:dry": "node scripts/publish.mjs --dry-run"
   },
   "devDependencies": {
     "@types/culori": "^4.0.1",

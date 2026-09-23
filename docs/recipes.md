@@ -1,10 +1,10 @@
 ---
 title: Recipes
-summary: Eight verified example films, what each one teaches, the line worth copying, and what to change first.
+summary: Nine verified recipes and one larger showcase film, with rendered videos, techniques and starting points.
 ---
 # Recipes
 
-Every film here lives in [`examples/recipes/`](../examples/recipes) and does one job: it shows a single technique in the smallest film that still looks like something you would ship. Read the one nearest your problem, copy it, change the props.
+The nine recipes live in [`examples/recipes/`](../examples/recipes). Each shows a single technique in the smallest film that still looks like something you would ship. The [Tiny Cosmic Disco showcase](#tiny-cosmic-disco-showcase) combines several techniques in one scene. Read the film nearest your problem, copy it, change the props.
 
 | Recipe | What it teaches | Technique | Packages |
 | --- | --- | --- | --- |
@@ -17,15 +17,16 @@ Every film here lives in [`examples/recipes/`](../examples/recipes) and does one
 | [Lower third](#lower-third) | In, hold and out, all from controls | DOM | — |
 | [Beat pulse](#beat-pulse) | Cutting on bars and beats | DOM | `culori` |
 | [Rocket launch](#rocket-launch) | Cutting a film into beats, a line drawing itself on, a camera shake | SVG + Canvas2D | — |
+| [Tiny Cosmic Disco](#tiny-cosmic-disco-showcase) | Combining deterministic motion, character animation and a title reveal | SVG | — |
 
 ## These are known to work
 
-`examples/recipes/recipes.test.tsx` mounts every recipe in a real DOM at its first frame, its middle frame, its last frame and one frame asked for out of order. A recipe that throws, logs a React error, renders almost nothing or draws nothing on its canvas fails the suite. It also asserts that the same frame asked for twice produces the same markup, and that every default prop has a control. Then each one is rendered to the video on this page. That is why the excerpts below are quoted from the files rather than retyped: an example cannot change under the page that quotes it.
+`examples/recipes/recipes.test.tsx` mounts every recipe in a real DOM at its first frame, its middle frame, its last frame and one frame asked for out of order. A recipe that throws, logs a React error, renders almost nothing or draws nothing on its canvas fails the suite. It also asserts that the same frame asked for twice produces the same markup, and that every default prop has a control. Then each one is rendered to the video on this page. The showcase is separate from that suite; it has been type-checked, rendered and visually inspected. Excerpts below are quoted from source files rather than retyped, so the docs verifier catches a source change that leaves them stale.
 
 Render one yourself:
 
 ```bash
-zxn-motion render examples/recipes/retro-tv.tsx retro-tv out/retro-tv.mp4
+npm exec -- zxn-motion render examples/recipes/retro-tv.tsx retro-tv out/retro-tv.mp4
 ```
 
 Every file exports both a named film and a `films` array, so it is a valid CLI entry on its own.
@@ -201,6 +202,28 @@ The line is an SVG path with `pathLength="1"`, a dash of `1` and an offset of `1
 
 Change first: the four controls, then `ignition` and `liftoff`, the two frames the whole film is cut around, and the four points of `curve`. Deeper: [Thinking in frames](thinking-in-frames.md) and [Drawing on canvas](canvas.md).
 
+## Tiny Cosmic Disco showcase
+
+<video src="media/tiny-cosmic-disco.mp4" poster="media/tiny-cosmic-disco.jpg" controls muted loop playsinline width="720"></video>
+
+A six-second scene with a planet DJ, a spinning disco ball, speaker cones that pulse to an imagined beat, seeded stars and a title that springs on at the end. Unlike the focused recipes, this [complete film](../examples/tiny-cosmic-disco.tsx) shows how several small frame-driven motions can make one characterful composition. It uses SVG for crisp shapes and keeps every position, colour and opacity a pure function of the requested frame.
+
+```tsx excerpt=examples/tiny-cosmic-disco.tsx
+  const beat = (1 + Math.cos(frame * Math.PI / 7.5)) / 2;
+  const intro = mapRange(frame, [0, 18], [0, 1], { clamp: true, ease: easing.easeOut });
+  const reveal = springValue({ frame: frame - 105, frameRate: film.frameRate, stiffness: 100, damping: 15, clamp: true });
+```
+
+The cosine supplies a repeatable pulse for the speakers and light beams, while the spring gives the final title a different, more deliberate rhythm. There is no playback state: scrubbing directly to frame 150 produces the same composition as playing to it. Stars use `seededRandom` with an index-derived key, so their positions stay fixed across renders while their brightness varies with the frame.
+
+Render it yourself:
+
+```bash
+npm exec -- zxn-motion render examples/tiny-cosmic-disco.tsx tiny-cosmic-disco out/tiny-cosmic-disco.mp4
+```
+
+Change first: the `title` and four colour controls. Then adjust frame 105 to move the title reveal, or the `7.5` in the beat expression to change the dance tempo. Deeper: [Thinking in frames](thinking-in-frames.md) and [Controls and props](controls-and-props.md).
+
 ## Ideas to build next
 
 Each of these is one technique away from something above.
@@ -216,4 +239,4 @@ Each of these is one technique away from something above.
 - **A terminal typing a command.** Monospace DOM, the typewriter slice for the prompt, then output lines revealed by stacked `<Cue>`s two frames apart.
 - **A clock face turning into a pie chart.** The elapsed-clock dial, with the sweep wedge growing to a real data value and the hands fading out under it.
 
-Start from the nearest recipe, run `zxn-motion render` on it, and change one number at a time. If you are working with an AI agent, [Writing films with an AI agent](ai-agents.md) hands it all of this over MCP.
+Start from the nearest recipe, run `npm exec -- zxn-motion render` on it, and change one number at a time. If you are working with an AI agent, [Writing films with an AI agent](ai-agents.md) hands it all of this over MCP.

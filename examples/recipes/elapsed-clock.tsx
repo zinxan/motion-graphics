@@ -1,4 +1,4 @@
-import { FullFrame, defineFilm, easing, mapRange, springValue, useTimeline } from "@zxn/motion-core";
+import { FullFrame, defineFilm, easing, mapRange, springValue, useTimeline } from "@matildeene/motion-core";
 
 /*
  * A clock that shows time passing: "three hours later".

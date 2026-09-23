@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { createTextStyle2D } from "./defaults";
-import { alignedLineStart, estimateText2D, measureLine, measureText2D, paintedTextBounds2D } from "./layout";
+import { createTextStyle2D } from "./defaults.js";
+import { alignedLineStart, estimateText2D, measureLine, measureText2D, paintedTextBounds2D } from "./layout.js";
 
 describe("2D text layout", () => {
   it("includes spacing only between glyphs", () => {

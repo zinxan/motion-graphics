@@ -1,6 +1,6 @@
 {
-  "name": "@zxn/motion-player",
-  "version": "0.1.0",
+  "name": "@matildeene/motion-player",
+  "version": "0.1.1",
   "description": "Interactive browser player for ZXN Motion films.",
   "license": "MIT",
   "type": "module",
@@ -26,7 +26,7 @@
     "lucide-react": "^0.545.0"
   },
   "peerDependencies": {
-    "@zxn/motion-core": "^0.1.0",
+    "@matildeene/motion-core": "^0.1.0",
     "react": ">=19.0.0"
   },
   "repository": {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isBackdropDecoration, renderTextDecoration, textDecorationOverflow, type TextDecoration } from "./decoration";
+import { isBackdropDecoration, renderTextDecoration, textDecorationOverflow, type TextDecoration } from "./decoration.js";
 
 const rect = { left: -100, top: -30, width: 200, height: 60 };
 

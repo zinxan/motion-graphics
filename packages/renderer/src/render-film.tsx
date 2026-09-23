@@ -1,4 +1,4 @@
-import { FilmSurface, installedFootageProvider, paintFootageFrames, type FilmDescriptor, type JsonObject, type RenderProgress } from "@zxn/motion-core";
+import { FilmSurface, installedFootageProvider, paintFootageFrames, type FilmDescriptor, type JsonObject, type RenderProgress } from "@matildeene/motion-core";
 import { toCanvas } from "html-to-image";
 import {
   BufferTarget,

@@ -1,4 +1,4 @@
-import type { TextMaterial3D, TextMaterialPreset } from "./types";
+import type { TextMaterial3D, TextMaterialPreset } from "./types.js";
 
 const material = (
   preset: TextMaterialPreset,

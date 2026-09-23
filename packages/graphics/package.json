@@ -1,6 +1,6 @@
 {
-  "name": "@zxn/motion-graphics",
-  "version": "0.1.0",
+  "name": "@matildeene/motion-graphics",
+  "version": "0.1.1",
   "description": "Typed, deterministic motion graphics for ZXN Motion.",
   "license": "MIT",
   "type": "module",

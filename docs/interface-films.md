@@ -6,7 +6,7 @@ summary: Product tours and feature walkthroughs: a fixed board, a shot list that
 
 A film that shows an interface is a different job from a title card. Something has to be placed, something has to look at it, and a cursor has to travel to it and press it — and all three have to agree about where "it" is. The stage kit is three components and one rule: say where everything is once, in board pixels, and let the camera and the cursor read that table.
 
-Everything here comes from `@zxn/motion-core`.
+Everything here comes from `@matildeene/motion-core`.
 
 ## The board
 
@@ -70,8 +70,8 @@ Travel between keys is eased in and out and bowed slightly off the straight line
 Here is the whole kit doing its job: a mock application window, four shots, and a cursor that goes to the Export button and presses it.
 
 ```tsx film
-import { defineFilm, Pointer, Stage, StageItem, usePointer, useTimeline } from "@zxn/motion-core";
-import type { CameraShot, PointerKey, StageLayout } from "@zxn/motion-core";
+import { defineFilm, Pointer, Stage, StageItem, usePointer, useTimeline } from "@matildeene/motion-core";
+import type { CameraShot, PointerKey, StageLayout } from "@matildeene/motion-core";
 
 type Props = {
   readonly appName: string;

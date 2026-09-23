@@ -6,7 +6,7 @@ export {
   textDecorationLabels,
   type TextDecoration,
   type TextDecorationKind,
-} from "./decoration";
+} from "./decoration.js";
 export {
   evaluateTextAnimation,
   restingTextAnimation,
@@ -21,8 +21,8 @@ export {
   type TextAnimationStep,
   type TextLoop,
   type TextLoopId,
-} from "./animation";
-export { roughenOutline, textBackgroundOutline, textBackgroundOverflow, textBackgroundPath, traceOutline, type PlateOutline, type PlatePoint, type PlateRect } from "./background-shape";
+} from "./animation.js";
+export { roughenOutline, textBackgroundOutline, textBackgroundOverflow, textBackgroundPath, traceOutline, type PlateOutline, type PlatePoint, type PlateRect } from "./background-shape.js";
 export {
   createTextStyle2D,
   createTextStyle3D,
@@ -36,7 +36,7 @@ export {
   defaultTextSurfacePaint,
   defaultTextSurfaceRelief,
   normalizeTextSurfaceRelief,
-} from "./defaults";
+} from "./defaults.js";
 export {
   defaultTextFontFamily,
   findTextFont,
@@ -47,11 +47,11 @@ export {
   type TextFontAvailability,
   type TextFontCategory,
   type TextFontOption,
-} from "./font-catalog";
-export { alignedLineStart, estimateText2D, measureLine, measureText2D, paintedTextBounds2D, textFont, type TextMeasureContext, type TextMeasurer } from "./layout";
-export { createTextMaterial3D, textMaterialPresets } from "./presets";
-export { renderText2D } from "./render-2d";
-export { surfaceReliefShifts, surfaceTextureAlpha } from "./surface-relief";
+} from "./font-catalog.js";
+export { alignedLineStart, estimateText2D, measureLine, measureText2D, paintedTextBounds2D, textFont, type TextMeasureContext, type TextMeasurer } from "./layout.js";
+export { createTextMaterial3D, textMaterialPresets } from "./presets.js";
+export { renderText2D } from "./render-2d.js";
+export { surfaceReliefShifts, surfaceTextureAlpha } from "./surface-relief.js";
 export type {
   TextAlign,
   TextBevel3D,
@@ -76,4 +76,4 @@ export type {
   TextStyle2DOverrides,
   TextStyle3D,
   TextStyle3DOverrides,
-} from "./types";
+} from "./types.js";

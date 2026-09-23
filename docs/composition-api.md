@@ -4,14 +4,14 @@ summary: Reference for films, time, timing primitives, animation maths, stage an
 ---
 # Composition API
 
-Everything here is exported from `@zxn/motion-core` unless it says otherwise.
+Everything here is exported from `@matildeene/motion-core` unless it says otherwise.
 
 ## A film
 
 A film is a React component plus the facts a host needs to show it: its size, its cadence and how many frames it has. `defineFilm` checks those facts and returns the film; an entry module exports an array of them.
 
 ```tsx
-import { defineFilm, FullFrame, useTimeline } from "@zxn/motion-core";
+import { defineFilm, FullFrame, useTimeline } from "@matildeene/motion-core";
 
 type Props = { readonly title: string; readonly color: string };
 

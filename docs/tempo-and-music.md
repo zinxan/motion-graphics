@@ -37,7 +37,7 @@ A bad tempo throws when the film is defined, not halfway through a render.
 The same maths is exported as plain functions for code outside a component: `barFrame`, `beatFrame`, `barAtFrame`, `beatAtFrame`, `isOnBeat`, `secondsPerBeat`, `resolveMusicalTiming` and `createTempoClock`.
 
 ```ts
-import { beatFrame, createTempoClock, secondsPerBeat } from "@zxn/motion-core";
+import { beatFrame, createTempoClock, secondsPerBeat } from "@matildeene/motion-core";
 
 const clock = createTempoClock({ bpm: 120 }, 30);
 clock.bar(2);                              // 120
@@ -116,7 +116,7 @@ And the tempo itself, with the film's length written in bars rather than guessed
 `onBeat` with a `division` is how you drive something faster than the pulse. This film runs an eight-step grid and a twelve-band equaliser on eighths: the pads light in turn, the bands jump to a new seeded height on each eighth and fall away, and the whole frame lifts for a single frame on each downbeat.
 
 ```tsx film
-import { FullFrame, defineFilm, easing, mapRange, seededRandom, useTempo, useTimeline } from "@zxn/motion-core";
+import { FullFrame, defineFilm, easing, mapRange, seededRandom, useTempo, useTimeline } from "@matildeene/motion-core";
 
 type Props = {
   readonly label: string;

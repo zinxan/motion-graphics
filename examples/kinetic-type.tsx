@@ -1,4 +1,4 @@
-import { Cue, FullFrame, defineFilm, easing, mapRange, springValue, useTimeline } from "@zxn/motion-core";
+import { Cue, FullFrame, defineFilm, easing, mapRange, springValue, useTimeline } from "@matildeene/motion-core";
 
 type KineticTypeProps = {
   readonly background: string;

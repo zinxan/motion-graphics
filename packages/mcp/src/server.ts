@@ -26,7 +26,7 @@ Importable: ${allowedPackages.join(", ")}.`;
 export function createServer(): McpServer {
   const docs = loadDocs();
   const examples = loadExamples();
-  const server = new McpServer({ name: "zxn-motion", version: "0.1.0" }, { instructions: authoringRules });
+  const server = new McpServer({ name: "zxn-motion", version: "0.1.1" }, { instructions: authoringRules });
 
   server.registerTool("authoring_rules", {
     title: "Authoring rules",
@@ -88,7 +88,7 @@ export function createServer(): McpServer {
     },
   }, ({ entryFile, files }) => {
     const findings = checkFilm({ entryFile, files });
-    const typed = canTypeCheck() ? "" : "\n\nNote: @zxn/motion-core is not installed beside this server, so types were not checked; only imports and habits were.";
+    const typed = canTypeCheck() ? "" : "\n\nNote: @matildeene/motion-core is not installed beside this server, so types were not checked; only imports and habits were.";
     if (findings.length === 0) return text(`No problems found.${typed}`);
     const lines = findings.map((finding) => `${finding.severity.toUpperCase()} ${finding.file}${finding.line ? `:${String(finding.line)}` : ""}  ${finding.message}`);
     const errors = findings.filter((finding) => finding.severity === "error").length;

@@ -1,4 +1,4 @@
-import type { TextBackgroundEdge, TextBackgroundShape } from "./types";
+import type { TextBackgroundEdge, TextBackgroundShape } from "./types.js";
 
 export type PlateRect = Readonly<{ left: number; top: number; width: number; height: number }>;
 export type PlatePoint = Readonly<{ x: number; y: number }>;

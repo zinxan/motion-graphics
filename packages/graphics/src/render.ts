@@ -1,4 +1,4 @@
-import type { MotionGraphic, MotionGraphicFrame } from "./types";
+import type { MotionGraphic, MotionGraphicFrame } from "./types.js";
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 const easeOut = (value: number) => 1 - (1 - clamp(value)) ** 3;
@@ -17,7 +17,7 @@ export function renderMotionGraphic(context: CanvasRenderingContext2D, graphic: 
   const top = -height / 2 + 64 * scale;
   const contentWidth = width - 160 * scale;
   const chartTop = top + 174 * scale;
-  const chartHeight = height - 270 * scale;
+  const chartHeight = height - 300 * scale;
   const intro = easeOut(frame.localSeconds / 0.55);
 
   roundedRect(context, -width / 2, -height / 2, width, height, 0, graphic.background);

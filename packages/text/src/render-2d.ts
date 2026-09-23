@@ -1,8 +1,8 @@
-import { roughenOutline, textBackgroundOutline, traceOutline, type PlateRect } from "./background-shape";
-import { isBackdropDecoration, renderTextDecoration } from "./decoration";
-import { alignedLineStart, measureText2D, textFont } from "./layout";
-import { renderTextSurfaceRelief } from "./surface-relief";
-import type { TextBounds, TextFill, TextStroke, TextStyle2D } from "./types";
+import { roughenOutline, textBackgroundOutline, traceOutline, type PlateRect } from "./background-shape.js";
+import { isBackdropDecoration, renderTextDecoration } from "./decoration.js";
+import { alignedLineStart, measureText2D, textFont } from "./layout.js";
+import { renderTextSurfaceRelief } from "./surface-relief.js";
+import type { TextBounds, TextFill, TextStroke, TextStyle2D } from "./types.js";
 
 function createFill(context: CanvasRenderingContext2D, fill: TextFill, width: number, height: number): string | CanvasGradient {
   if (fill.kind === "solid") return fill.color;

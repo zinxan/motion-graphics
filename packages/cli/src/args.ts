@@ -1,4 +1,4 @@
-import type { RenderFormatId } from "@zxn/motion-renderer";
+import type { RenderFormatId } from "@matildeene/motion-renderer";
 
 export type RenderCommand = Readonly<{
   kind: "render";

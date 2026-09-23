@@ -1,5 +1,5 @@
 import { formatHex, interpolate } from "culori";
-import { Cue, FullFrame, defineFilm, easing, mapRange, useTempo, useTimeline } from "@zxn/motion-core";
+import { Cue, FullFrame, defineFilm, easing, mapRange, useTempo, useTimeline } from "@matildeene/motion-core";
 
 /*
  * Cut to the music: a film with a tempo.

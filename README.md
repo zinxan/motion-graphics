@@ -5,7 +5,7 @@
 This is the open-source film stack behind [ZXN Studio](https://zxn.studio), a desktop screen recorder and video editor. MIT licensed: use it in anything, commercial or not, with no company licence to buy.
 
 ```tsx
-import { Cue, FullFrame, defineFilm, easing, mapRange, springValue, useTimeline } from "@zxn/motion-core";
+import { Cue, FullFrame, defineFilm, easing, mapRange, springValue, useTimeline } from "@matildeene/motion-core";
 
 function Title({ text, accent }: { readonly text: string; readonly accent: string }) {
   const { frame, film } = useTimeline();
@@ -31,7 +31,7 @@ export const films = [defineFilm({
 ```
 
 ```bash
-zxn-motion render ./films.tsx title ./out/title.mp4
+npm exec -- zxn-motion render ./films.tsx title ./out/title.mp4
 ```
 
 ## Why another one
@@ -46,19 +46,26 @@ zxn-motion render ./films.tsx title ./out/title.mp4
 
 | Package | What it is |
 | --- | --- |
-| [`@zxn/motion-core`](packages/core) | `defineFilm`, the frame context (`useTimeline`, `useVirtualTime`, `useTempo`), timing primitives (`Cue`, `Hold`, `Repeat`, `FullFrame`), `Canvas2D` for anything particle-like, animation maths (`mapRange`, `springValue`, `easing`, `seededRandom`), and the interface-film kit: `Stage`, `Camera`, `Pointer`, `Footage`. |
-| [`@zxn/motion-player`](packages/player) | `<FilmPlayer>`: play, pause, seek and loop a film in the browser. Ships its own small CSS; no Tailwind needed. |
-| [`@zxn/motion-renderer`](packages/renderer) | `renderFilm()`: commits each exact frame, rasterises the DOM and encodes H.264 or VP9 through WebCodecs. `canRenderFilm()` checks device support before any work starts. |
-| [`@zxn/motion-cli`](packages/cli) | `zxn-motion render <entry> <film> <output>`: bundles a film entry and renders it in a sandboxed, hidden Electron window. |
-| [`@zxn/motion-graphics`](packages/graphics) | Declarative, frame-deterministic charts and callouts. Definitions are plain data, so they are safe to generate. |
-| [`@zxn/motion-mcp`](packages/mcp) | A Model Context Protocol server for AI agents: the docs, the verified examples and a film checker. |
-| [`@zxn/motion-text`](packages/text) | Serializable 2D text styles (gradients, strokes, shadows, letter spacing) with one renderer for canvas and export. No React dependency. |
+| [`@matildeene/motion-core`](packages/core) | `defineFilm`, the frame context (`useTimeline`, `useVirtualTime`, `useTempo`), timing primitives (`Cue`, `Hold`, `Repeat`, `FullFrame`), `Canvas2D` for anything particle-like, animation maths (`mapRange`, `springValue`, `easing`, `seededRandom`), and the interface-film kit: `Stage`, `Camera`, `Pointer`, `Footage`. |
+| [`@matildeene/motion-player`](packages/player) | `<FilmPlayer>`: play, pause, seek and loop a film in the browser. Ships its own small CSS; no Tailwind needed. |
+| [`@matildeene/motion-renderer`](packages/renderer) | `renderFilm()`: commits each exact frame, rasterises the DOM and encodes H.264 or VP9 through WebCodecs. `canRenderFilm()` checks device support before any work starts. |
+| [`@matildeene/motion-cli`](packages/cli) | `zxn-motion render <entry> <film> <output>`: bundles a film entry and renders it in a sandboxed, hidden Electron window. |
+| [`@matildeene/motion-graphics`](packages/graphics) | Declarative, frame-deterministic charts and callouts. Definitions are plain data, so they are safe to generate. |
+| [`@matildeene/motion-mcp`](packages/mcp) | A Model Context Protocol server for AI agents: the docs, the verified examples and a film checker. |
+| [`@matildeene/motion-text`](packages/text) | Serializable 2D text styles (gradients, strokes, shadows, letter spacing) with one renderer for canvas and export. No React dependency. |
 
 Dependencies point inward: CLI → Renderer / Player → Core. Graphics, Text and the MCP server stand alone.
 
 ## Getting started
 
-Requires Node 22+.
+Requires Node 22.12+. In an existing React project:
+
+```bash
+npm install @matildeene/motion-core @matildeene/motion-player @matildeene/motion-renderer
+npm install --save-dev @matildeene/motion-cli
+```
+
+To develop the packages or run the example films from this repository:
 
 ```bash
 git clone https://github.com/zinxan/motion-graphics.git
@@ -70,9 +77,9 @@ npm run check      # typecheck, tests, build
 Preview a film in your own React app:
 
 ```tsx
-import { describeFilm } from "@zxn/motion-core";
-import { FilmPlayer } from "@zxn/motion-player";
-import "@zxn/motion-player/player.css";
+import { describeFilm } from "@matildeene/motion-core";
+import { FilmPlayer } from "@matildeene/motion-player";
+import "@matildeene/motion-player/player.css";
 import { films } from "./films";
 
 export const Preview = () => <FilmPlayer film={describeFilm(films[0]!)} loop />;
@@ -81,9 +88,9 @@ export const Preview = () => <FilmPlayer film={describeFilm(films[0]!)} loop />;
 Render it in the browser:
 
 ```ts
-import { canRenderFilm, renderFilm } from "@zxn/motion-renderer";
+import { canRenderFilm, renderFilm } from "@matildeene/motion-renderer";
 
-import { describeFilm } from "@zxn/motion-core";
+import { describeFilm } from "@matildeene/motion-core";
 import { films } from "./films";
 
 const film = describeFilm(films[0]!);
@@ -95,12 +102,12 @@ if (await canRenderFilm(film, "mp4-h264")) {
 Or from the command line. The file extension picks the preset, and an existing file is only replaced with `--force`:
 
 ```bash
-zxn-motion render ./films.tsx title ./out/title.webm --props ./props.json
+npm exec -- zxn-motion render ./films.tsx title ./out/title.webm --props ./props.json
 ```
 
 ## Recipes
 
-Eight example films, each there to teach one technique done properly. Every one is mounted at several frames by the test suite and rendered to video, so they are known to work.
+Nine example films, each there to teach one technique done properly. Every one is mounted at several frames by the test suite and rendered to video, so they are known to work.
 
 [![Cartoon television](docs/media/retro-tv.jpg)](docs/recipes.md)
 
@@ -114,9 +121,16 @@ Eight example films, each there to teach one technique done properly. Every one 
 | [GSAP title](examples/recipes/gsap-title.tsx) | A paused GSAP timeline the film seeks every frame: seek, never play. |
 | [Lower third](examples/recipes/lower-third.tsx) | A transparent name strap driven entirely by controls. |
 | [Beat pulse](examples/recipes/beat-pulse.tsx) | Cuts on bars and a pulse on beats from the film's tempo; OKLCH colour with `culori`. |
+| [Rocket launch](examples/recipes/rocket-launch.tsx) | A countdown, ignition, and a trajectory that draws itself behind the rocket. |
 
 ```bash
-zxn-motion render examples/recipes/retro-tv.tsx retro-tv out/retro-tv.mp4
+npm exec -- zxn-motion render examples/recipes/retro-tv.tsx retro-tv out/retro-tv.mp4
+```
+
+For a larger scene that combines those techniques, try [Tiny Cosmic Disco](examples/tiny-cosmic-disco.tsx): a dancing planet DJ, spinning disco ball, seeded stars, pulsing speakers and a spring-driven title reveal. [Watch the rendered film and read the breakdown](docs/recipes.md#tiny-cosmic-disco-showcase).
+
+```bash
+npm exec -- zxn-motion render examples/tiny-cosmic-disco.tsx tiny-cosmic-disco out/tiny-cosmic-disco.mp4
 ```
 
 ## Documentation
@@ -150,7 +164,7 @@ If you want Remotion's ecosystem, cloud rendering and years of polish, use Remot
 
 ## Status
 
-`0.1.0`: a working vertical slice, used inside ZXN Studio. Expect the API to move before 1.0. Not yet published to npm; build from source for now.
+The `0.1.x` packages are published on npm. This is a working vertical slice used inside ZXN Studio; expect the API to move before 1.0.
 
 Known limits: rendering rasterises the DOM, so very heavy DOM (thousands of blurred text nodes at 4K) is slow; draw anything particle-like on a single `<Canvas2D>` instead. Audio is out of scope for a film; sound belongs on a timeline. `<Footage>` needs a frame provider, which the CLI installs and other hosts must supply.
 

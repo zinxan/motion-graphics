@@ -5,7 +5,7 @@ import {
   textFontCatalog,
   textFontCategoryOrder,
   textFontsByCategory,
-} from "./font-catalog";
+} from "./font-catalog.js";
 
 describe("2D text font catalog", () => {
   it("provides a substantial, unique selection in every category", () => {

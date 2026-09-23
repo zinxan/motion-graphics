@@ -17,7 +17,7 @@ The two mix freely. `examples/recipes/retro-tv.tsx` is a cabinet in SVG with a c
 ## The API
 
 ```tsx
-import { Canvas2D } from "@zxn/motion-core";
+import { Canvas2D } from "@matildeene/motion-core";
 
 <Canvas2D draw={paint} width={960} height={540} className="screen" style={{ opacity: 0.8 }} />;
 ```
@@ -62,7 +62,7 @@ Drawing happens in a layout effect, after React commits and before the host capt
 `paintCanvasFrame(context, draw, frame)` is the same call `<Canvas2D>` makes, exported so a draw function can be exercised against any 2D context, in a test or outside React. It clears and resets the context, calls `draw`, and restores — even if the draw throws, which it then lets through.
 
 ```ts
-import { paintCanvasFrame } from "@zxn/motion-core";
+import { paintCanvasFrame } from "@matildeene/motion-core";
 
 paintCanvasFrame(context, myDraw, { frame: 15, absoluteFrame: 15, seconds: 0.5, film, width: 320, height: 180 });
 ```
@@ -179,7 +179,7 @@ Time is the noise's third axis, which is what makes the field drift rather than 
 A starfield, complete, for the shape of it:
 
 ```tsx film
-import { Canvas2D, FullFrame, defineFilm, seededRandom, type CanvasDraw } from "@zxn/motion-core";
+import { Canvas2D, FullFrame, defineFilm, seededRandom, type CanvasDraw } from "@matildeene/motion-core";
 
 type Props = { readonly background: string; readonly count: number; readonly drift: number };
 

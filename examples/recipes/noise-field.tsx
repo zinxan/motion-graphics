@@ -1,5 +1,5 @@
 import { createNoise3D } from "simplex-noise";
-import { Canvas2D, FullFrame, defineFilm, seededRandom, type CanvasDraw } from "@zxn/motion-core";
+import { Canvas2D, FullFrame, defineFilm, seededRandom, type CanvasDraw } from "@matildeene/motion-core";
 
 /*
  * A flowing field of lines, from simplex noise.

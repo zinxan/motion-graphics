@@ -1,7 +1,7 @@
-import { createTextMaterial3D } from "./presets";
-import { defaultTextFontFamily } from "./font-catalog";
-import type { TextDecoration } from "./decoration";
-import type { TextBackground, TextGlow, TextStyle2D, TextStyle2DOverrides, TextStyle3D, TextStyle3DOverrides, TextSurfaceRelief } from "./types";
+import { createTextMaterial3D } from "./presets.js";
+import { defaultTextFontFamily } from "./font-catalog.js";
+import type { TextDecoration } from "./decoration.js";
+import type { TextBackground, TextGlow, TextStyle2D, TextStyle2DOverrides, TextStyle3D, TextStyle3DOverrides, TextSurfaceRelief } from "./types.js";
 
 export const defaultTextSurfaceRelief: TextSurfaceRelief = {
   kind: "engraved",

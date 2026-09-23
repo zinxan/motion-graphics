@@ -1,4 +1,4 @@
-import { Canvas2D, Cue, FullFrame, defineFilm, easing, mapRange, seededRandom, springValue, useTimeline, type CanvasDraw } from "@zxn/motion-core";
+import { Canvas2D, Cue, FullFrame, defineFilm, easing, mapRange, seededRandom, springValue, useTimeline, type CanvasDraw } from "@matildeene/motion-core";
 
 /*
  * A rocket launch, with a countdown.

@@ -27,22 +27,22 @@
       "node"
     ],
     "paths": {
-      "@zxn/motion-core": [
+      "@matildeene/motion-core": [
         "./packages/core/src/index.ts"
       ],
-      "@zxn/motion-graphics": [
+      "@matildeene/motion-graphics": [
         "./packages/graphics/src/index.ts"
       ],
-      "@zxn/motion-text": [
+      "@matildeene/motion-text": [
         "./packages/text/src/index.ts"
       ],
-      "@zxn/motion-player": [
+      "@matildeene/motion-player": [
         "./packages/player/src/index.ts"
       ],
-      "@zxn/motion-renderer": [
+      "@matildeene/motion-renderer": [
         "./packages/renderer/src/index.ts"
       ],
-      "@zxn/motion-mcp": [
+      "@matildeene/motion-mcp": [
         "./packages/mcp/src/index.ts"
       ]
     }
@@ -51,5 +51,9 @@
     "packages",
     "examples",
     "vitest.config.ts"
+  ],
+  "exclude": [
+    "packages/mcp/content",
+    "packages/*/dist"
   ]
 }

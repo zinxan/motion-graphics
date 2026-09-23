@@ -1,9 +1,8 @@
-.zxn-player { position: relative; min-height: 0; width: 100%; height: 100%; color: #f5f7f4; }
-.zxn-player__viewport { position: absolute; inset: 0 0 54px; display: grid; min-width: 0; min-height: 0; place-items: center; overflow: hidden; box-sizing: border-box; padding: 24px; background: radial-gradient(circle at 50% 45%, rgba(183,255,82,.035), transparent 38%), #070908; }
-.zxn-player--no-controls .zxn-player__viewport { bottom: 0; }
+.zxn-player { position: relative; min-height: 0; width: 100%; color: #f5f7f4; }
+.zxn-player__viewport { position: relative; display: grid; width: 100%; min-width: 0; min-height: 0; place-items: center; overflow: hidden; box-sizing: border-box; background: #070908; }
 .zxn-player__frame { position: relative; flex: none; overflow: hidden; }
 .zxn-player__surface { transform-origin: top left; box-shadow: 0 22px 70px rgba(0,0,0,.5); }
-.zxn-player__controls { position: absolute; z-index: 2; right: 0; bottom: 0; left: 0; display: flex; height: 54px; min-width: 0; box-sizing: border-box; align-items: center; gap: 9px; border-top: 1px solid rgba(255,255,255,.075); padding: 0 14px; background: rgba(12,15,13,.96); }
+.zxn-player__controls { position: relative; z-index: 2; display: flex; height: 54px; min-width: 0; box-sizing: border-box; align-items: center; gap: 9px; border-top: 1px solid rgba(255,255,255,.075); padding: 0 14px; background: rgba(12,15,13,.96); }
 .zxn-player__button { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid rgba(255,255,255,.07); border-radius: 8px; background: rgba(255,255,255,.025); color: rgba(255,255,255,.68); cursor: pointer; }
 .zxn-player__button:hover { border-color: rgba(255,255,255,.14); background: rgba(255,255,255,.07); color: white; }
 .zxn-player__button svg { width: 15px; height: 15px; }

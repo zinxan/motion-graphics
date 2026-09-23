@@ -1,6 +1,6 @@
-import { textBackgroundOverflow } from "./background-shape";
-import { textDecorationOverflow } from "./decoration";
-import type { TextAlign, TextBounds, TextStyle2D } from "./types";
+import { textBackgroundOverflow } from "./background-shape.js";
+import { textDecorationOverflow } from "./decoration.js";
+import type { TextAlign, TextBounds, TextStyle2D } from "./types.js";
 
 export type TextMeasurer = (value: string) => number;
 export type TextMeasureContext = { font: string; measureText: (value: string) => Readonly<{ width: number }> };

@@ -30,8 +30,13 @@ await copyFile("packages/cli/runner/package.json", "packages/cli/dist/runner/pac
 // The MCP server answers from the same docs and examples the site publishes; they travel with the package.
 await rm("packages/mcp/content", { force: true, recursive: true });
 await cp("docs", "packages/mcp/content/docs", { recursive: true });
-await mkdir("packages/mcp/content/examples", { recursive: true });
+await mkdir("packages/mcp/content/examples/recipes", { recursive: true });
 for (const file of await readdir("examples/recipes")) {
   if (file.endsWith(".test.tsx") || file === "index.ts") continue;
   await copyFile(`examples/recipes/${file}`, `packages/mcp/content/examples/${file}`);
+  await copyFile(`examples/recipes/${file}`, `packages/mcp/content/examples/recipes/${file}`);
+}
+for (const file of await readdir("examples")) {
+  if (!file.endsWith(".tsx")) continue;
+  await copyFile(`examples/${file}`, `packages/mcp/content/examples/${file}`);
 }

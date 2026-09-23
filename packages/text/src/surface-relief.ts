@@ -1,5 +1,5 @@
-import { normalizeTextSurfaceRelief } from "./defaults";
-import type { TextSurfaceRelief } from "./types";
+import { normalizeTextSurfaceRelief } from "./defaults.js";
+import type { TextSurfaceRelief } from "./types.js";
 
 type Point = Readonly<{ x: number; y: number }>;
 type ReliefBox = Readonly<{ left: number; top: number; width: number; height: number }>;

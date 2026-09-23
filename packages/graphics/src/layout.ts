@@ -1,4 +1,4 @@
-import type { MotionGraphic, MotionGraphicElementBounds, MotionGraphicFrame } from "./types";
+import type { MotionGraphic, MotionGraphicElementBounds, MotionGraphicFrame } from "./types.js";
 
 const textWidth = (text: string, fontSize: number): number => Math.max(fontSize, text.length * fontSize * 0.58);
 
@@ -12,7 +12,7 @@ export function layoutMotionGraphicElements(
   const top = -height / 2 + 64 * scale;
   const contentWidth = width - 160 * scale;
   const chartTop = top + 174 * scale;
-  const chartHeight = height - 270 * scale;
+  const chartHeight = height - 300 * scale;
   const slots = Math.max(1, graphic.labels.length);
   const slotWidth = contentWidth / slots;
   const seriesWidth = slotWidth * 0.72 / Math.max(1, graphic.series.length);

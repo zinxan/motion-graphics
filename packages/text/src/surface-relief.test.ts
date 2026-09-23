@@ -4,8 +4,8 @@ import {
   createTextSurfacePaint,
   createTextSurfaceRelief,
   normalizeTextSurfaceRelief,
-} from "./defaults";
-import { surfaceReliefShifts, surfaceTextureAlpha } from "./surface-relief";
+} from "./defaults.js";
+import { surfaceReliefShifts, surfaceTextureAlpha } from "./surface-relief.js";
 
 describe("engraved text surface", () => {
   it("deep-merges serializable relief controls", () => {

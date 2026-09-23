@@ -1,16 +1,36 @@
 {
-  "name": "@zxn/motion-mcp",
-  "version": "0.1.0",
+  "name": "@matildeene/motion-mcp",
+  "version": "0.1.1",
   "description": "Model Context Protocol server for ZXN Motion Graphics: docs, verified examples and a film checker for AI agents.",
   "license": "MIT",
   "type": "module",
-  "bin": { "zxn-motion-mcp": "./dist/bin.js" },
-  "files": ["dist", "content", "README.md", "LICENSE"],
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
-  "publishConfig": { "access": "public" },
-  "repository": { "type": "git", "url": "git+https://github.com/zinxan/motion-graphics.git", "directory": "packages/mcp" },
+  "bin": {
+    "zxn-motion-mcp": "dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "content",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zinxan/motion-graphics.git",
+    "directory": "packages/mcp"
+  },
   "homepage": "https://github.com/zinxan/motion-graphics#readme",
-  "bugs": { "url": "https://github.com/zinxan/motion-graphics/issues" },
+  "bugs": {
+    "url": "https://github.com/zinxan/motion-graphics/issues"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.0",
     "typescript": "~6.0.2",

@@ -1,6 +1,6 @@
 import { scaleBand, scaleLinear } from "d3-scale";
 import { interpolateNumber } from "d3-interpolate";
-import { FullFrame, defineFilm, easing, mapRange, useTimeline } from "@zxn/motion-core";
+import { FullFrame, defineFilm, easing, mapRange, useTimeline } from "@matildeene/motion-core";
 
 /*
  * A bar chart race, using d3 for what d3 is good at.

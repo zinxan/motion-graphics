@@ -3,7 +3,7 @@ import { checkFilm } from "./check.js";
 import { loadExamples, parseDoc } from "./content.js";
 import { search } from "./search.js";
 
-const film = (body: string, imports = 'import { FullFrame, defineFilm, useTimeline } from "@zxn/motion-core";') => ({
+const film = (body: string, imports = 'import { FullFrame, defineFilm, useTimeline } from "@matildeene/motion-core";') => ({
   entryFile: "film.tsx",
   files: { "film.tsx": `${imports}
 function Demo() { const { frame } = useTimeline(); ${body} return <FullFrame>{frame}</FullFrame>; }
@@ -30,7 +30,7 @@ describe("check_film", () => {
   });
 
   it("refuses an import a film may not use, and says what is available", () => {
-    const findings = checkFilm(film("", 'import { FullFrame, defineFilm, useTimeline } from "@zxn/motion-core";\nimport fs from "node:fs";'));
+    const findings = checkFilm(film("", 'import { FullFrame, defineFilm, useTimeline } from "@matildeene/motion-core";\nimport fs from "node:fs";'));
     expect(findings.find((finding) => finding.message.includes('"node:fs"'))?.message).toContain("d3-scale");
   });
 
@@ -59,7 +59,7 @@ describe("check_film", () => {
   });
 
   it("asks for a control on every prop", () => {
-    const uncontrolled = { entryFile: "film.tsx", files: { "film.tsx": `import { FullFrame, defineFilm } from "@zxn/motion-core";
+    const uncontrolled = { entryFile: "film.tsx", files: { "film.tsx": `import { FullFrame, defineFilm } from "@matildeene/motion-core";
 const Demo = ({ name }: { readonly name: string }) => <FullFrame>{name}</FullFrame>;
 export const films = [defineFilm({ id: "demo", title: "Demo", width: 1920, height: 1080, frameRate: 30, frames: 60, component: Demo, defaultProps: { name: "Ada" } })];` } };
     expect(checkFilm(uncontrolled).map((finding) => finding.message).join(" ")).toContain('No control for "name"');

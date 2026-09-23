@@ -1,4 +1,4 @@
-import { defineFilm, seededRandom, useTimeline } from "@zxn/motion-core";
+import { defineFilm, seededRandom, useTimeline } from "@matildeene/motion-core";
 
 type Props = {
   accent: string;

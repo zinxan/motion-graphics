@@ -17,17 +17,18 @@ The checker in `packages/mcp/src/check.ts` holds the list as `allowedPackages`. 
 | Package | What it is for |
 | --- | --- |
 | `react`, `react/jsx-runtime` | The tree itself. |
-| `@zxn/motion-core` | `defineFilm`, `useTimeline`, `Cue`, `mapRange`, `Canvas2D` and the rest. |
-| `@zxn/motion-graphics` | Declarative, frame-deterministic charts and callouts. |
-| `@zxn/motion-text` | Serializable 2D text styles. |
-| `@zxn/ui`, `lucide-react`, `clsx`, `tailwind-merge`, `class-variance-authority`, `radix-ui` | Interface parts, for films that show a product. See [interface films](interface-films.md). |
+| `@matildeene/motion-core` | `defineFilm`, `useTimeline`, `Cue`, `mapRange`, `Canvas2D` and the rest. |
+| `@matildeene/motion-graphics` | Declarative, frame-deterministic charts and callouts. |
+| `@matildeene/motion-text` | Serializable 2D text styles. |
+| `lucide-react`, `clsx`, `tailwind-merge`, `class-variance-authority`, `radix-ui` | Optional interface parts for films that show a product. See [interface films](interface-films.md). |
+| `@zxn/ui` | ZXN Studio's private interface package, available only to its own workspace. It is not required by the public motion packages. |
 | `d3-scale`, `d3-shape`, `d3-interpolate`, `d3-ease` | Pure maths: values to pixels, points to path data, value to value, progress to progress. |
 | `gsap` | Choreography, built paused and seeked. |
 | `lottie-web` | A designer's animation, stepped to an exact frame. |
 | `simplex-noise` | Smooth generative fields, seeded. |
 | `culori` | Colour conversion and interpolation in perceptual spaces. |
 
-Inside ZXN Studio these are bundled with the app: a film imports them and they are there. In your own project you install them yourself, at whatever version your lockfile says. Check the installed types before you rely on an API; this page only uses what the verified examples use.
+Inside ZXN Studio these are bundled with the app: a film imports them and they are there. In your own project you install the public packages you use, at whatever version your lockfile says; `@zxn/ui` is private and not needed for the examples here. Check the installed types before you rely on an API; this page only uses what the verified examples use.
 
 ## d3-scale and d3-interpolate: pure functions fit a film
 
@@ -108,7 +109,7 @@ The same shape fits anything seekable. Lottie is the common one:
 ```tsx
 import { useLayoutEffect, useRef } from "react";
 import type { AnimationItem } from "lottie-web";
-import { useVirtualTime } from "@zxn/motion-core";
+import { useVirtualTime } from "@matildeene/motion-core";
 
 export function useSeekedLottie(animation: AnimationItem | null): void {
   const { frame } = useVirtualTime();
@@ -123,7 +124,7 @@ Anything that only plays is a warning from the checker. This is what it looks li
 ```tsx film expect-warnings
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import { FullFrame, defineFilm } from "@zxn/motion-core";
+import { FullFrame, defineFilm } from "@matildeene/motion-core";
 
 type Props = { readonly label: string };
 
@@ -169,7 +170,7 @@ let draws = 0;
 const noise = createNoise3D(() => seededRandom(`noise-field-${draws++}`));
 ```
 
-`seededRandom(seed)` from `@zxn/motion-core` returns the same number for the same seed, for ever. The counter walks the seed so the table is filled with different values, and because the whole thing lives at module scope it is built **once**, when the module loads, not per render. Rebuilding it inside the component would reseed from the same counter at a different starting point and the field would shift.
+`seededRandom(seed)` from `@matildeene/motion-core` returns the same number for the same seed, for ever. The counter walks the seed so the table is filled with different values, and because the whole thing lives at module scope it is built **once**, when the module loads, not per render. Rebuilding it inside the component would reseed from the same counter at a different starting point and the field would shift.
 
 Time is the third axis, which is what makes the field drift instead of jump:
 
@@ -216,7 +217,7 @@ Nothing stops a film using several of these at once, as long as each is used as 
 ```tsx film
 import { scaleLinear } from "d3-scale";
 import { curveCatmullRom, line } from "d3-shape";
-import { FullFrame, defineFilm, easing, mapRange, useTimeline } from "@zxn/motion-core";
+import { FullFrame, defineFilm, easing, mapRange, useTimeline } from "@matildeene/motion-core";
 
 /*
  * A line chart that draws itself.

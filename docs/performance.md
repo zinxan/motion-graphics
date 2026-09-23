@@ -31,7 +31,7 @@ The second problem was more interesting, because it was not about speed at all. 
 Here is the approach, compressed. The checker rejects it:
 
 ```tsx film expect-warnings
-import { FullFrame, defineFilm, seededRandom, useTimeline } from "@zxn/motion-core";
+import { FullFrame, defineFilm, seededRandom, useTimeline } from "@matildeene/motion-core";
 
 type Props = { readonly color: string };
 
