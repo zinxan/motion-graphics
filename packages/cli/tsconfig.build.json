@@ -11,5 +11,5 @@
     "types": ["node"]
   },
   "include": ["src"],
-  "exclude": ["src/**/*.test.ts", "src/electron-runner.ts"]
+  "exclude": ["src/**/*.test.ts", "src/electron-runner.ts", "src/native-capture.ts", "src/capture-preload.ts"]
 }

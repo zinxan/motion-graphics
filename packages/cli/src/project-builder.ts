@@ -67,7 +67,7 @@ globalThis.zxnFootage = {
 function browserEntry(entryPath: string, filmId: string, format: RenderFormatId, props: JsonObject): string {
   return `import "./footage-provider.js";
 import { describeFilm } from "@matildeene/motion-core";
-import { renderFilm } from "@matildeene/motion-renderer";
+import { renderFilmToStream } from "@matildeene/motion-renderer";
 import * as userEntry from ${JSON.stringify(entryPath)};
 
 async function render() {
@@ -81,9 +81,29 @@ async function render() {
     throw new Error(\`Unknown film \"\${filmId}\". Available films: \${ids || "none"}.\`);
   }
   const descriptor = describeFilm(film);
+  await window.zxnCapture.prepare(descriptor.width, descriptor.height);
+  const captureCanvas = document.createElement("canvas");
+  captureCanvas.width = descriptor.width;
+  captureCanvas.height = descriptor.height;
+  const captureContext = captureCanvas.getContext("2d");
+  if (!captureContext) throw new Error("Canvas 2D is unavailable.");
+  const pixels = captureContext.createImageData(descriptor.width, descriptor.height);
   const reportEvery = Math.max(1, Math.floor(descriptor.frames / 20));
-  const bytes = await renderFilm({
+  await renderFilmToStream({
+    writable: new WritableStream({
+      async write({ data, position }) {
+        const response = await fetch("/__chunk?position=" + position, { method: "POST", body: data });
+        if (!response.ok) throw new Error(await response.text());
+      },
+    }),
     film: descriptor,
+    async captureFrame() {
+      const bitmap = await window.zxnCapture.frame();
+      if (bitmap.byteLength !== pixels.data.length) throw new Error("Unexpected capture bitmap dimensions.");
+      pixels.data.set(bitmap);
+      captureContext.putImageData(pixels, 0, 0);
+      return { source: captureCanvas, release: () => {} };
+    },
     format: ${JSON.stringify(format)},
     inputProps: ${JSON.stringify(props)},
     onProgress: ({ frame, totalFrames }) => {
@@ -92,7 +112,7 @@ async function render() {
       }
     },
   });
-  const response = await fetch("/__result", { method: "POST", body: bytes });
+  const response = await fetch("/__complete", { method: "POST" });
   if (!response.ok) throw new Error(await response.text());
 }
 

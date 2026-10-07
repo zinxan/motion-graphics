@@ -15,13 +15,13 @@ describe("check_film", () => {
     expect(checkFilm(film(""))).toEqual([]);
   });
 
-  it("passes every shipped example, so the checker and the recipes can never disagree", () => {
-    const examples = loadExamples();
-    expect(examples.length).toBeGreaterThanOrEqual(8);
-    for (const example of examples) {
-      const findings = checkFilm({ entryFile: example.file, files: { [example.file]: example.source } });
-      expect(findings.filter((finding) => finding.severity === "error"), example.id).toEqual([]);
-    }
+  it("ships at least eight examples for the checker", () => {
+    expect(loadExamples().length).toBeGreaterThanOrEqual(8);
+  });
+
+  it.each(loadExamples())("passes shipped example $id, so the checker and recipes agree", (example) => {
+    const findings = checkFilm({ entryFile: example.file, files: { [example.file]: example.source } });
+    expect(findings.filter((finding) => finding.severity === "error"), example.id).toEqual([]);
   });
 
   it("reports a type error with its line, from the SDK's real declarations", () => {

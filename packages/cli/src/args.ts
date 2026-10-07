@@ -17,6 +17,7 @@ export type RenderCommand = Readonly<{
   /** Video files answering `<Footage asset="…">`, by asset id. */
   footage: Readonly<Record<string, string>>;
   force: boolean;
+  memoryLimitMiB: number;
 }>;
 
 export type CliCommand = RenderCommand | Readonly<{ kind: "help" }>;
@@ -31,6 +32,7 @@ Options:
   --css <file.css>     Load a stylesheet beside the film
   --app-root <dir>     Resolve the @/ alias, for films that use @zxn/ui
   --footage <id=file>  Supply a video for <Footage asset="id" />; repeatable
+  --memory-limit <MiB> Maximum render process memory (default: 2048)
   --force              Replace an existing output file
   --help               Show this help
 
@@ -50,7 +52,14 @@ export function parseArgs(args: readonly string[]): CliCommand {
   let appRoot: string | undefined;
   const footage: Record<string, string> = {};
   let force = false;
+  let memoryLimitMiB = 2048;
   const valueOptions = new Map<string, (value: string) => void>([
+    ["--memory-limit", (value) => {
+      if (!/^[0-9]+$/.test(value) || !Number.isSafeInteger(Number(value)) || Number(value) < 128) {
+        throw new Error("--memory-limit must be an integer of at least 128 MiB.");
+      }
+      memoryLimitMiB = Number(value);
+    }],
     ["--props", (value) => { propsPath = value; }],
     ["--css", (value) => { cssPath = value; }],
     ["--app-root", (value) => { appRoot = value; }],
@@ -90,5 +99,5 @@ export function parseArgs(args: readonly string[]): CliCommand {
     : extension === "mov" ? "mov-h264"
       : extension === "webm" ? "webm-vp9" : undefined;
   if (!format) throw new Error("Output must use the .mp4, .mov, or .webm extension.");
-  return { kind: "render", entry, filmId, output, format, propsPath, cssPath, appRoot, footage, force };
+  return { kind: "render", entry, filmId, output, format, propsPath, cssPath, appRoot, footage, force, memoryLimitMiB };
 }

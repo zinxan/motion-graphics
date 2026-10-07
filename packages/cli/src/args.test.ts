@@ -14,6 +14,7 @@ describe("parseArgs", () => {
       appRoot: undefined,
       footage: {},
       force: true,
+      memoryLimitMiB: 2048,
     });
   });
 
@@ -58,5 +59,15 @@ describe("parseArgs", () => {
 
   it("shows help without arguments", () => {
     expect(parseArgs([])).toEqual({ kind: "help" });
+  });
+
+  it("accepts an explicit memory ceiling", () => {
+    expect(parseArgs(["render", "films.tsx", "intro", "intro.mp4", "--memory-limit", "512"]))
+      .toMatchObject({ memoryLimitMiB: 512 });
+  });
+
+  it.each(["0", "127", "1.5", "NaN", "-1", "9007199254740992"])("rejects invalid memory ceiling %s", (value) => {
+    expect(() => parseArgs(["render", "films.tsx", "intro", "intro.mp4", "--memory-limit", value]))
+      .toThrow("integer");
   });
 });
