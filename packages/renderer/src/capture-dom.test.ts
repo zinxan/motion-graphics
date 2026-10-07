@@ -18,6 +18,7 @@ describe("DOM capture resource lifetime", () => {
       constructor() { image = this as unknown as HTMLImageElement; }
       removeAttribute() { this.src = ""; }
       hasAttribute() { return this.src !== ""; }
+      async decode() {}
       dispatchEvent(event: Event) { if (event.type === "load") this.onload?.(); else this.onerror?.(); }
     });
   });

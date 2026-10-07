@@ -27,6 +27,8 @@ export function createDomCapture(width: number, height: number): Readonly<{
           image.src = svg;
           if (signal?.aborted) abort();
         });
+        await image.decode();
+        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
         signal?.throwIfAborted();
         context.clearRect(0, 0, width, height);
         context.drawImage(image, 0, 0, width, height);
