@@ -24,6 +24,11 @@ await build({
   outfile: "packages/cli/dist/electron-runner.mjs",
   bundle: true, platform: "node", format: "esm", packages: "external", sourcemap: true,
 });
+await build({
+  entryPoints: ["packages/cli/src/capture-preload.ts"],
+  outfile: "packages/cli/dist/capture-preload.cjs",
+  bundle: true, platform: "node", format: "cjs", packages: "external", sourcemap: true,
+});
 await mkdir("packages/cli/dist/runner", { recursive: true });
 await copyFile("packages/cli/runner/package.json", "packages/cli/dist/runner/package.json");
 

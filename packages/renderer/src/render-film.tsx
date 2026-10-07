@@ -1,5 +1,5 @@
 import { FilmSurface, installedFootageProvider, paintFootageFrames, type FilmDescriptor, type JsonObject, type RenderProgress } from "@matildeene/motion-core";
-import { toCanvas } from "html-to-image";
+import { createDomCapture } from "./capture-dom.js";
 import {
   BufferTarget,
   canEncodeVideo,
@@ -8,16 +8,26 @@ import {
   Mp4OutputFormat,
   Output,
   QUALITY_HIGH,
+  StreamTarget,
+  type StreamTargetChunk,
+  type Target,
   WebMOutputFormat,
 } from "mediabunny";
 import { createRoot } from "react-dom/client";
 import { flushSync } from "react-dom";
+
+export type CapturedFrame = Readonly<{
+  source: CanvasImageSource;
+  release: () => void;
+}>;
 
 export type RenderFilmOptions = Readonly<{
   film: FilmDescriptor;
   format?: RenderFormatId;
   inputProps?: JsonObject;
   signal?: AbortSignal;
+  /** Custom capture receives a visible surface at the viewport origin. */
+  captureFrame?: (surface: HTMLElement, signal?: AbortSignal) => Promise<CapturedFrame>;
   onProgress?: (progress: RenderProgress) => void;
 }>;
 
@@ -40,12 +50,13 @@ const afterPaint = async (): Promise<void> => new Promise((resolve) => {
   requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
 });
 
-function createRenderHost(film: FilmDescriptor): HTMLDivElement {
+function createRenderHost(film: FilmDescriptor, visible: boolean): HTMLDivElement {
   const host = document.createElement("div");
   host.dataset.zxnRenderHost = film.id;
   Object.assign(host.style, {
     position: "fixed",
-    left: "-100000px",
+    left: visible ? "0" : "-100000px",
+    zIndex: "2147483647",
     top: "0",
     width: `${film.width}px`,
     height: `${film.height}px`,
@@ -74,7 +85,23 @@ function rethrow(error: Error): never {
 }
 
 export async function renderFilm(options: RenderFilmOptions): Promise<Uint8Array> {
-  const { film, format: formatId = "mp4-h264", inputProps, signal, onProgress } = options;
+  const target = new BufferTarget();
+  await renderToTarget(options, target);
+  if (!target.buffer) throw new Error("The encoder returned an empty render.");
+  return new Uint8Array(target.buffer);
+}
+
+export type RenderFilmStreamOptions = RenderFilmOptions & Readonly<{
+  writable: WritableStream<StreamTargetChunk>;
+}>;
+
+/** Streams positioned writes with backpressure instead of retaining the entire movie. */
+export async function renderFilmToStream(options: RenderFilmStreamOptions): Promise<void> {
+  await renderToTarget(options, new StreamTarget(options.writable, { chunked: true, chunkSize: 1024 * 1024 }));
+}
+
+async function renderToTarget(options: RenderFilmOptions, target: Target): Promise<void> {
+  const { film, format: formatId = "mp4-h264", inputProps, signal, onProgress, captureFrame } = options;
   const format = getRenderFormat(formatId);
   if (!(await canRenderFilm(film, formatId))) {
     throw new Error(`This device cannot encode ${film.width}×${film.height} ${format.codecLabel} video.`);
@@ -86,7 +113,7 @@ export async function renderFilm(options: RenderFilmOptions): Promise<Uint8Array
   const context = encodingCanvas.getContext("2d", { alpha: false });
   if (!context) throw new Error("Canvas 2D is unavailable.");
 
-  const target = new BufferTarget();
+  const capture = captureFrame ? undefined : createDomCapture(film.width, film.height);
   const outputFormat = formatId === "webm-vp9"
     ? new WebMOutputFormat()
     : formatId === "mov-h264" ? new MovOutputFormat() : new Mp4OutputFormat();
@@ -94,7 +121,7 @@ export async function renderFilm(options: RenderFilmOptions): Promise<Uint8Array
   const output = new Output({ format: outputFormat, target });
   const video = new CanvasSource(encodingCanvas, { codec, bitrate: QUALITY_HIGH });
   output.addVideoTrack(video, { frameRate: film.frameRate });
-  const host = createRenderHost(film);
+  const host = createRenderHost(film, captureFrame !== undefined);
   /*
    * React 19 reports an uncaught render error to its own handler and leaves
    * the tree empty rather than throwing out of flushSync. Without this, a film
@@ -121,30 +148,36 @@ export async function renderFilm(options: RenderFilmOptions): Promise<Uint8Array
       // Footage is filled after the commit and before the capture, the same
       // place images and fonts are waited for.
       await paintFootageFrames(host, installedFootageProvider());
+      await document.fonts.ready;
+      await Promise.all([...host.querySelectorAll("img")].map((image) => image.decode()));
       await afterPaint();
       const surface = host.firstElementChild;
       if (!(surface instanceof HTMLElement)) throw new Error("The film surface did not mount.");
-      const snapshot = await toCanvas(surface, {
-        width: film.width,
-        height: film.height,
-        pixelRatio: 1,
-        skipAutoScale: true,
-      });
-      context.clearRect(0, 0, film.width, film.height);
-      context.drawImage(snapshot, 0, 0, film.width, film.height);
+      const snapshot = captureFrame
+        ? await captureFrame(surface, signal)
+        : { source: await capture!.frame(surface, signal), release: () => undefined };
+      try {
+        signal?.throwIfAborted();
+        context.clearRect(0, 0, film.width, film.height);
+        context.drawImage(snapshot.source, 0, 0, film.width, film.height);
+      } finally {
+        snapshot.release();
+      }
       const duration = 1 / film.frameRate;
       await video.add(frame * duration, duration, { keyFrame: frame % (film.frameRate * 2) === 0 });
       onProgress?.({ frame: frame + 1, totalFrames: film.frames, ratio: (frame + 1) / film.frames });
     }
+    signal?.throwIfAborted();
     await output.finalize();
-    if (!target.buffer) throw new Error("The encoder returned an empty render.");
-    return new Uint8Array(target.buffer);
   } catch (error) {
     if (started) await output.cancel().catch(() => undefined);
     throw error;
   } finally {
     flushSync(() => root.unmount());
     host.remove();
+    capture?.dispose();
+    encodingCanvas.width = 0;
+    encodingCanvas.height = 0;
   }
 }
 

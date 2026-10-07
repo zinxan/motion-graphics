@@ -23,7 +23,7 @@ async function loadProps(path: string | undefined): Promise<JsonObject> {
   return parsed as JsonObject;
 }
 
-async function launchElectron(site: string, output: string, replace: boolean): Promise<void> {
+async function launchElectron(site: string, output: string, replace: boolean, memoryLimitMiB: number): Promise<void> {
   const electronBinary = require("electron") as unknown;
   if (typeof electronBinary !== "string") throw new Error("The Electron executable is unavailable.");
   const runner = fileURLToPath(new URL("./runner", import.meta.url));
@@ -31,13 +31,28 @@ async function launchElectron(site: string, output: string, replace: boolean): P
   delete environment.ELECTRON_RUN_AS_NODE;
 
   await new Promise<void>((resolvePromise, reject) => {
-    const child = spawn(electronBinary, [runner, site, output, replace ? "replace" : "create"], {
+    const child = spawn(electronBinary, [runner, site, output, replace ? "replace" : "create", String(memoryLimitMiB)], {
       env: environment,
       stdio: "inherit",
     });
-    child.once("error", reject);
+    let cancelled = false;
+    let escalation: ReturnType<typeof setTimeout> | undefined;
+    const cancel = (): void => {
+      cancelled = true;
+      child.kill("SIGTERM");
+      escalation ??= setTimeout(() => child.kill("SIGKILL"), 5000);
+    };
+    const cleanup = (): void => {
+      process.off("SIGINT", cancel);
+      process.off("SIGTERM", cancel);
+      if (escalation) clearTimeout(escalation);
+    };
+    process.on("SIGINT", cancel);
+    process.on("SIGTERM", cancel);
+    child.once("error", (error) => { cleanup(); reject(error); });
     child.once("exit", (code, signal) => {
-      if (code === 0) {
+      cleanup();
+      if (code === 0 && !cancelled) {
         resolvePromise();
         return;
       }
@@ -75,7 +90,7 @@ export async function runCli(args: readonly string[]): Promise<void> {
       footage: Object.fromEntries(Object.entries(command.footage).map(([id, file]) => [id, resolve(file)])),
     });
     console.info(`Rendering ${command.filmId}…`);
-    await launchElectron(site, outputPath, command.force);
+    await launchElectron(site, outputPath, command.force, command.memoryLimitMiB);
   } finally {
     await rm(temporaryDirectory, { force: true, recursive: true });
   }
